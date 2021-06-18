@@ -1,0 +1,1322 @@
+openapi: 3.0.1
+info:
+  title: Node API to Vue SPA
+  version: 1.0.0
+servers:
+- url: /
+tags:
+- name: users
+- name: contatos
+- name: pessoas
+- name: auth
+- name: resources
+- name: favoritos
+paths:
+  /auth/login:
+    get:
+      tags:
+      - auth
+      summary: Autentica usuário e devolve token
+      operationId: login
+      responses:
+        "200":
+          description: Usuário logado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200'
+      security:
+      - basic: []
+      x-swagger-router-controller: Auth
+  /user:
+    get:
+      tags:
+      - users
+      summary: Pegar dados do usuário logado
+      operationId: getUser
+      responses:
+        "200":
+          description: Usuário autenticado e encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserJson'
+      security:
+      - jwt: []
+      x-swagger-router-controller: Users
+    post:
+      tags:
+      - users
+      summary: Criar um novo usuário
+      operationId: createUser
+      requestBody:
+        description: Dados do usuário a ser criado
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserFormData'
+      responses:
+        "201":
+          description: Usuário criado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicResponse'
+        "400":
+          description: Dados do usuário inválidos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicResponse'
+        "401":
+          description: Falha de autenticação
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicResponse'
+      security:
+      - jwt: []
+      x-swagger-router-controller: Users
+  /user/{id}:
+    get:
+      tags:
+      - users
+      summary: Encontrar um usuário pelo id
+      operationId: findUserById
+      parameters:
+      - name: id
+        in: path
+        description: Id do usuário a ser encontrado
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: Usuário encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserJson'
+        "401":
+          description: Falha de autenticação
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicResponse'
+        "404":
+          description: Usuário não encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicResponse'
+      security:
+      - jwt: []
+      x-swagger-router-controller: Users
+    put:
+      tags:
+      - users
+      summary: Editar um usuário
+      operationId: updateUser
+      parameters:
+      - name: id
+        in: path
+        description: Id do usuário a ser atualizado
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      requestBody:
+        description: Dados a serem atualizados no usuário
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserFormData'
+      responses:
+        "200":
+          description: Usuário atualizado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicResponse'
+        "400":
+          description: Dados do usuário inválidos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicResponse'
+        "401":
+          description: Falha de autenticação
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicResponse'
+      security:
+      - jwt: []
+      x-swagger-router-controller: Users
+    delete:
+      tags:
+      - users
+      summary: Excluir um usuário
+      operationId: deleteUser
+      parameters:
+      - name: id
+        in: path
+        description: Id do usuário a ser excluído
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: Usuário excluído
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicResponse'
+        "401":
+          description: Falha de autenticação
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicResponse'
+        "404":
+          description: Usuário não encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicResponse'
+      security:
+      - jwt: []
+      x-swagger-router-controller: Users
+  /user/list:
+    get:
+      tags:
+      - users
+      summary: Filtrar usuários
+      operationId: filterUser
+      parameters:
+      - name: page
+        in: query
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: Resultado da busca
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserArray'
+        "401":
+          description: Falha de autenticação
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicResponse'
+      security:
+      - jwt: []
+      x-swagger-router-controller: Users
+  /contato:
+    post:
+      tags:
+      - contatos
+      summary: Criar um novo contato
+      operationId: createContato
+      requestBody:
+        description: Dados do contato a ser criado
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ContatoJson'
+      responses:
+        "201":
+          description: Contato criado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicResponse'
+        "400":
+          description: Dados do contato inválidos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicResponse'
+        "401":
+          description: Falha de autenticação
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicResponse'
+      security:
+      - jwt: []
+      x-swagger-router-controller: Contatos
+  /contato/{id}:
+    get:
+      tags:
+      - contatos
+      summary: Encontrar um contato pelo id
+      operationId: findContatoById
+      parameters:
+      - name: id
+        in: path
+        description: Id do contato a ser encontrado
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: contato encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContatoJson'
+        "401":
+          description: Falha de autenticação
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicResponse'
+        "404":
+          description: Contato não encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicResponse'
+      security:
+      - jwt: []
+      x-swagger-router-controller: Contatos
+    put:
+      tags:
+      - contatos
+      summary: Editar um contato
+      operationId: updateContato
+      parameters:
+      - name: id
+        in: path
+        description: Id do contato a ser atualizado
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      requestBody:
+        description: Dados a serem atualizados no contato
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ContatoJson'
+      responses:
+        "200":
+          description: Contato atualizado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicResponse'
+        "400":
+          description: Dados do contato inválidos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicResponse'
+        "401":
+          description: Falha de autenticação
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicResponse'
+        "404":
+          description: Contato não encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicResponse'
+      security:
+      - jwt: []
+      x-swagger-router-controller: Contatos
+    delete:
+      tags:
+      - contatos
+      summary: Excluir um contato
+      operationId: deleteContato
+      parameters:
+      - name: id
+        in: path
+        description: Id do contato a ser excluído
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: Contato excluído
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicResponse'
+        "401":
+          description: Falha de autenticação
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicResponse'
+        "404":
+          description: Contato não encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicResponse'
+      security:
+      - jwt: []
+      x-swagger-router-controller: Contatos
+  /contato/list:
+    get:
+      tags:
+      - contatos
+      summary: Filtrar contatos
+      operationId: filterContato
+      parameters:
+      - name: page
+        in: query
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: Resultado da busca
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContatoArray'
+        "401":
+          description: Falha de autenticação
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicResponse'
+      security:
+      - jwt: []
+      x-swagger-router-controller: Contatos
+  /pessoa:
+    post:
+      tags:
+      - pessoas
+      summary: Criar uma nova pessoa
+      operationId: createPessoa
+      requestBody:
+        description: Dados da pessoa a ser criada
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PessoaFormData'
+      responses:
+        "201":
+          description: Pessoa criada com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicResponse'
+        "400":
+          description: Dados da pessoa inválidos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicResponse'
+        "401":
+          description: Falha de autenticação
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicResponse'
+      security:
+      - jwt: []
+      x-swagger-router-controller: Pessoas
+  /pessoa/{id}:
+    get:
+      tags:
+      - pessoas
+      summary: Encontrar uma pessoa pelo id
+      operationId: findPessoaById
+      parameters:
+      - name: id
+        in: path
+        description: Id da pessoa a ser encontrada
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: Pessoa encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PessoaJson'
+        "401":
+          description: Falha de autenticação
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicResponse'
+        "404":
+          description: Pessoa não encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicResponse'
+      security:
+      - jwt: []
+      x-swagger-router-controller: Pessoas
+    put:
+      tags:
+      - pessoas
+      summary: Editar uma pessoa
+      operationId: updatePessoa
+      parameters:
+      - name: id
+        in: path
+        description: Id da pessoa a ser atualizada
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      requestBody:
+        description: Dados a serem atualizados na pessoa
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PessoaFormData'
+      responses:
+        "200":
+          description: Pessoa atualizada com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicResponse'
+        "400":
+          description: Dados da pessoa inválidos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicResponse'
+        "401":
+          description: Falha de autenticação
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicResponse'
+        "404":
+          description: Pessoa não encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicResponse'
+      security:
+      - jwt: []
+      x-swagger-router-controller: Pessoas
+    delete:
+      tags:
+      - pessoas
+      summary: Excluir uma pessoa
+      operationId: deletePessoa
+      parameters:
+      - name: id
+        in: path
+        description: Id da pessoa a ser excluída
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: Pessoa excluída
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicResponse'
+        "401":
+          description: Falha de autenticação
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicResponse'
+        "404":
+          description: Pessoa não encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicResponse'
+      security:
+      - jwt: []
+      x-swagger-router-controller: Pessoas
+  /pessoa/list:
+    get:
+      tags:
+      - pessoas
+      summary: Filtrar pessoas
+      operationId: filterPessoa
+      parameters:
+      - name: page
+        in: query
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: Resultado da busca
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PessoaArray'
+        "401":
+          description: Falha de autenticação
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicResponse'
+      security:
+      - jwt: []
+      x-swagger-router-controller: Pessoas
+  /resources/contato-tipos:
+    get:
+      tags:
+      - resources
+      summary: Listar tipos de contatos
+      operationId: listContatoTipos
+      responses:
+        "200":
+          description: Lista de contatoTipos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContatoTipoArray'
+        "401":
+          description: Falha de autenticação
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicResponse'
+      security:
+      - jwt: []
+      x-swagger-router-controller: Resources
+  /resources/contato-categorias:
+    get:
+      tags:
+      - resources
+      summary: Listar categorias de contatos
+      operationId: listContatoCategorias
+      responses:
+        "200":
+          description: Lista de contatoCategorias
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContatoCategoriaArray'
+        "401":
+          description: Falha de autenticação
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicResponse'
+      security:
+      - jwt: []
+      x-swagger-router-controller: Resources
+  /resources/pessoas:
+    get:
+      tags:
+      - resources
+      summary: Filtrar pessoas a serem selecionadas em forms
+      operationId: filterPessoas
+      parameters:
+      - name: withoutUser
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: boolean
+      responses:
+        "200":
+          description: Resultado da busca
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PessoaArray'
+        "401":
+          description: Falha de autenticação
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicResponse'
+      security:
+      - jwt: []
+      x-swagger-router-controller: Resources
+  /resources/paises:
+    get:
+      tags:
+      - resources
+      summary: Listar paises
+      operationId: listPaises
+      responses:
+        "200":
+          description: Lista de países
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaisArray'
+        "401":
+          description: Falha de autenticação
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicResponse'
+      security:
+      - jwt: []
+      x-swagger-router-controller: Resources
+  /resources/estados/{paisId}:
+    get:
+      tags:
+      - resources
+      summary: Listar estados de um país
+      operationId: listEstados
+      parameters:
+      - name: paisId
+        in: path
+        description: Id do país do qual listar os estados
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: Lista de estados
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EstadoArray'
+        "401":
+          description: Falha de autenticação
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicResponse'
+      security:
+      - jwt: []
+      x-swagger-router-controller: Resources
+  /resources/cidades/{estadoId}:
+    get:
+      tags:
+      - resources
+      summary: Listar cidades de um estado
+      operationId: listCidades
+      parameters:
+      - name: estadoId
+        in: path
+        description: Id do estado do qual listar as cidades
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: Lista de cidades
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CidadeArray'
+        "401":
+          description: Falha de autenticação
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicResponse'
+      security:
+      - jwt: []
+      x-swagger-router-controller: Resources
+  /favoritos/list:
+    get:
+      tags:
+      - favoritos
+      summary: Listar contatos favoritos do usuário logado
+      operationId: listFavoritos
+      responses:
+        "200":
+          description: Lista de favoritos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FavoritoArray'
+        "401":
+          description: Falha de autenticação
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicResponse'
+      security:
+      - jwt: []
+      x-swagger-router-controller: Favoritos
+  /favoritos/{id}:
+    put:
+      tags:
+      - favoritos
+      summary: Adicionar um contato aos favoritos
+      operationId: addFavorito
+      parameters:
+      - name: id
+        in: path
+        description: Id da pessoa a ser adicionada aos favoritos
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: Favorito adicionado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicResponse'
+        "401":
+          description: Falha de autenticação
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicResponse'
+        "404":
+          description: Pessoa não encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicResponse'
+      security:
+      - jwt: []
+      x-swagger-router-controller: Favoritos
+    delete:
+      tags:
+      - favoritos
+      summary: Remover um contato dos favoritos
+      operationId: removeFavorito
+      parameters:
+      - name: id
+        in: path
+        description: Id da pessoa a ser removida dos favoritos
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: Favorito removido com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicResponse'
+        "401":
+          description: Falha de autenticação
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicResponse'
+        "404":
+          description: Pessoa não encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicResponse'
+      security:
+      - jwt: []
+      x-swagger-router-controller: Favoritos
+components:
+  schemas:
+    BasicResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+        message:
+          type: string
+      example:
+        code: 0
+        message: message
+    ContatoCategoriaArray:
+      type: array
+      items:
+        $ref: '#/components/schemas/ContatoCategoriaJson'
+    ContatoCategoriaJson:
+      type: object
+      properties:
+        id:
+          type: integer
+        descricao:
+          type: string
+      example:
+        id: 1
+        descricao: descricao
+    ContatoTipoArray:
+      type: array
+      items:
+        $ref: '#/components/schemas/ContatoTipoJson'
+    ContatoTipoJson:
+      type: object
+      properties:
+        id:
+          type: integer
+        descricao:
+          type: string
+      example:
+        id: 6
+        descricao: descricao
+    ContatoArray:
+      type: array
+      items:
+        $ref: '#/components/schemas/ContatoJson'
+    ContatoJson:
+      type: object
+      properties:
+        id:
+          type: integer
+        valor:
+          type: string
+        user:
+          $ref: '#/components/schemas/UserJson'
+        pessoa:
+          $ref: '#/components/schemas/PessoaJson'
+        contato_tipo:
+          $ref: '#/components/schemas/ContatoTipoJson'
+        contato_categoria:
+          $ref: '#/components/schemas/ContatoCategoriaJson'
+      example:
+        pessoa:
+          endereco:
+            cidade:
+              estado:
+                uf: uf
+                nome: nome
+                id: 5
+                pais:
+                  nome: nome
+                  id: 2
+              nome: nome
+              id: 5
+            complemento: complemento
+            numero: numero
+            bairro: bairro
+            logradouro: logradouro
+            id: 1
+          data_nascimento: data_nascimento
+          cpf: cpf
+          nome: nome
+          id: 6
+        contato_tipo:
+          id: 6
+          descricao: descricao
+        contato_categoria:
+          id: 1
+          descricao: descricao
+        valor: valor
+        id: 0
+        user:
+          pessoa:
+            endereco:
+              cidade:
+                estado:
+                  uf: uf
+                  nome: nome
+                  id: 5
+                  pais:
+                    nome: nome
+                    id: 2
+                nome: nome
+                id: 5
+              complemento: complemento
+              numero: numero
+              bairro: bairro
+              logradouro: logradouro
+              id: 1
+            data_nascimento: data_nascimento
+            cpf: cpf
+            nome: nome
+            id: 6
+          roles:
+          - id: 7
+            descricao: descricao
+          - id: 7
+            descricao: descricao
+          id: 0
+          username: username
+    UserFormData:
+      type: object
+      properties:
+        files:
+          type: string
+          format: binary
+        user:
+          type: string
+          format: json
+    UserArray:
+      type: array
+      items:
+        $ref: '#/components/schemas/UserJson'
+    UserJson:
+      type: object
+      properties:
+        id:
+          type: integer
+        username:
+          type: string
+        pessoa:
+          $ref: '#/components/schemas/PessoaJson'
+        roles:
+          $ref: '#/components/schemas/RoleArray'
+      example:
+        pessoa:
+          endereco:
+            cidade:
+              estado:
+                uf: uf
+                nome: nome
+                id: 5
+                pais:
+                  nome: nome
+                  id: 2
+              nome: nome
+              id: 5
+            complemento: complemento
+            numero: numero
+            bairro: bairro
+            logradouro: logradouro
+            id: 1
+          data_nascimento: data_nascimento
+          cpf: cpf
+          nome: nome
+          id: 6
+        roles:
+        - id: 7
+          descricao: descricao
+        - id: 7
+          descricao: descricao
+        id: 0
+        username: username
+    RoleArray:
+      type: array
+      items:
+        $ref: '#/components/schemas/RoleJson'
+    RoleJson:
+      type: object
+      properties:
+        id:
+          type: integer
+        descricao:
+          type: string
+      example:
+        id: 7
+        descricao: descricao
+    FavoritoArray:
+      type: array
+      items:
+        $ref: '#/components/schemas/FavoritoJson'
+    FavoritoJson:
+      type: object
+      properties:
+        id:
+          type: integer
+        nome:
+          type: string
+        cpf:
+          type: string
+        data_nascimento:
+          type: string
+        contatos:
+          $ref: '#/components/schemas/ContatoArray'
+      example:
+        contatos:
+        - pessoa:
+            endereco:
+              cidade:
+                estado:
+                  uf: uf
+                  nome: nome
+                  id: 5
+                  pais:
+                    nome: nome
+                    id: 2
+                nome: nome
+                id: 5
+              complemento: complemento
+              numero: numero
+              bairro: bairro
+              logradouro: logradouro
+              id: 1
+            data_nascimento: data_nascimento
+            cpf: cpf
+            nome: nome
+            id: 6
+          contato_tipo:
+            id: 6
+            descricao: descricao
+          contato_categoria:
+            id: 1
+            descricao: descricao
+          valor: valor
+          id: 0
+          user:
+            pessoa:
+              endereco:
+                cidade:
+                  estado:
+                    uf: uf
+                    nome: nome
+                    id: 5
+                    pais:
+                      nome: nome
+                      id: 2
+                  nome: nome
+                  id: 5
+                complemento: complemento
+                numero: numero
+                bairro: bairro
+                logradouro: logradouro
+                id: 1
+              data_nascimento: data_nascimento
+              cpf: cpf
+              nome: nome
+              id: 6
+            roles:
+            - id: 7
+              descricao: descricao
+            - id: 7
+              descricao: descricao
+            id: 0
+            username: username
+        - pessoa:
+            endereco:
+              cidade:
+                estado:
+                  uf: uf
+                  nome: nome
+                  id: 5
+                  pais:
+                    nome: nome
+                    id: 2
+                nome: nome
+                id: 5
+              complemento: complemento
+              numero: numero
+              bairro: bairro
+              logradouro: logradouro
+              id: 1
+            data_nascimento: data_nascimento
+            cpf: cpf
+            nome: nome
+            id: 6
+          contato_tipo:
+            id: 6
+            descricao: descricao
+          contato_categoria:
+            id: 1
+            descricao: descricao
+          valor: valor
+          id: 0
+          user:
+            pessoa:
+              endereco:
+                cidade:
+                  estado:
+                    uf: uf
+                    nome: nome
+                    id: 5
+                    pais:
+                      nome: nome
+                      id: 2
+                  nome: nome
+                  id: 5
+                complemento: complemento
+                numero: numero
+                bairro: bairro
+                logradouro: logradouro
+                id: 1
+              data_nascimento: data_nascimento
+              cpf: cpf
+              nome: nome
+              id: 6
+            roles:
+            - id: 7
+              descricao: descricao
+            - id: 7
+              descricao: descricao
+            id: 0
+            username: username
+        data_nascimento: data_nascimento
+        cpf: cpf
+        nome: nome
+        id: 0
+    PessoaArray:
+      type: array
+      items:
+        $ref: '#/components/schemas/PessoaJson'
+    PessoaFormData:
+      type: object
+      properties:
+        files:
+          type: string
+          format: binary
+        pessoa:
+          type: string
+          format: json
+    PessoaJson:
+      type: object
+      properties:
+        id:
+          type: integer
+        nome:
+          type: string
+        cpf:
+          type: string
+        data_nascimento:
+          type: string
+        endereco:
+          $ref: '#/components/schemas/EnderecoJson'
+      example:
+        endereco:
+          cidade:
+            estado:
+              uf: uf
+              nome: nome
+              id: 5
+              pais:
+                nome: nome
+                id: 2
+            nome: nome
+            id: 5
+          complemento: complemento
+          numero: numero
+          bairro: bairro
+          logradouro: logradouro
+          id: 1
+        data_nascimento: data_nascimento
+        cpf: cpf
+        nome: nome
+        id: 6
+    EnderecoJson:
+      type: object
+      properties:
+        id:
+          type: integer
+        bairro:
+          type: string
+        logradouro:
+          type: string
+        numero:
+          type: string
+        complemento:
+          type: string
+        cidade:
+          $ref: '#/components/schemas/CidadeJson'
+      example:
+        cidade:
+          estado:
+            uf: uf
+            nome: nome
+            id: 5
+            pais:
+              nome: nome
+              id: 2
+          nome: nome
+          id: 5
+        complemento: complemento
+        numero: numero
+        bairro: bairro
+        logradouro: logradouro
+        id: 1
+    CidadeArray:
+      type: array
+      items:
+        $ref: '#/components/schemas/CidadeJson'
+    CidadeJson:
+      type: object
+      properties:
+        id:
+          type: integer
+        nome:
+          type: string
+        estado:
+          $ref: '#/components/schemas/EstadoJson'
+      example:
+        estado:
+          uf: uf
+          nome: nome
+          id: 5
+          pais:
+            nome: nome
+            id: 2
+        nome: nome
+        id: 5
+    EstadoArray:
+      type: array
+      items:
+        $ref: '#/components/schemas/EstadoJson'
+    EstadoJson:
+      type: object
+      properties:
+        id:
+          type: integer
+        nome:
+          type: string
+        uf:
+          type: string
+        pais:
+          $ref: '#/components/schemas/PaisJson'
+      example:
+        uf: uf
+        nome: nome
+        id: 5
+        pais:
+          nome: nome
+          id: 2
+    PaisArray:
+      type: array
+      items:
+        $ref: '#/components/schemas/PaisJson'
+    PaisJson:
+      type: object
+      properties:
+        id:
+          type: integer
+        nome:
+          type: string
+      example:
+        nome: nome
+        id: 2
+    inline_response_200:
+      type: object
+      properties:
+        token:
+          type: string
+      example:
+        token: token
+  securitySchemes:
+    basic:
+      type: http
+      scheme: basic
+    jwt:
+      type: http
+      scheme: bearer
