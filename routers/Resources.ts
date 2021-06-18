@@ -1,64 +1,52 @@
 'use strict';
 
-var utils = require('../utils/writer.ts');
-var Resources = require('../service/ResourcesService');
+var writer = require('../utils/writer.ts');
+var Resources = require('../controllers/ResourcesController');
 
-module.exports.filterPessoas = function filterPessoas (req, res, next, withoutUser) {
-  Resources.filterPessoas(withoutUser)
-    .then(function (response) {
-      utils.writeJson(res, response);
-    })
-    .catch(function (response) {
-      utils.writeJson(res, response);
-    });
+module.exports.filterPessoas = (req, res, next, withoutUser) => {
+  Resources.filterPessoas(withoutUser).then( (response) => {
+    writer.writeJson(res, response);
+  }).catch( (response) => {
+    writer.writeJson(res, response);
+  });
 };
 
-module.exports.listCidades = function listCidades (req, res, next, estadoId) {
-  Resources.listCidades(estadoId)
-    .then(function (response) {
-      utils.writeJson(res, response);
-    })
-    .catch(function (response) {
-      utils.writeJson(res, response);
-    });
+module.exports.listCidades = (req, res, next, estadoId) => {
+  Resources.listCidades(estadoId).then( (response) => {
+    writer.writeJson(res, response);
+  }).catch( (response) => {
+    writer.writeJson(res, response);
+  });
 };
 
-module.exports.listContatoCategorias = function listContatoCategorias (req, res, next) {
-  Resources.listContatoCategorias()
-    .then(function (response) {
-      utils.writeJson(res, response);
-    })
-    .catch(function (response) {
-      utils.writeJson(res, response);
-    });
+module.exports.listContatoCategorias = (req, res, next) => {
+  Resources.listContatoCategorias().then( (response) => {
+    writer.writeJson(res, response);
+  }).catch( (response) => {
+    writer.writeJson(res, response);
+  });
 };
 
-module.exports.listContatoTipos = function listContatoTipos (req, res, next) {
-  Resources.listContatoTipos()
-    .then(function (response) {
-      utils.writeJson(res, response);
-    })
-    .catch(function (response) {
-      utils.writeJson(res, response);
-    });
+module.exports.listContatoTipos = (req, res, next) => {
+  Resources.listContatoTipos().then( (response) => {
+    writer.writeJson(res, response);
+  }).catch( (response) => {
+    writer.writeJson(res, response);
+  });
 };
 
-module.exports.listEstados = function listEstados (req, res, next, paisId) {
-  Resources.listEstados(paisId)
-    .then(function (response) {
-      utils.writeJson(res, response);
-    })
-    .catch(function (response) {
-      utils.writeJson(res, response);
-    });
+module.exports.listEstados = (req, res, next, paisId) => {
+  Resources.listEstados(paisId).then( (response) => {
+    writer.writeJson(res, response);
+  }).catch( (response) => {
+    writer.writeJson(res, response);
+  });
 };
 
-module.exports.listPaises = function listPaises (req, res, next) {
-  Resources.listPaises()
-    .then(function (response) {
-      utils.writeJson(res, response);
-    })
-    .catch(function (response) {
-      utils.writeJson(res, response);
-    });
+module.exports.listPaises = (req, res, next) => {
+  Resources.listPaises().then( (response) => {
+    writer.writeJson(res, response);
+  }).catch( (response) => {
+    writer.writeJson(res, response);
+  });
 };

@@ -1,34 +1,28 @@
 'use strict';
 
-var utils = require('../utils/writer.ts');
-var Favoritos = require('../service/FavoritosService');
+var writer = require('../utils/writer.ts');
+var Favoritos = require('../controllers/FavoritosController');
 
-module.exports.addFavorito = function addFavorito (req, res, next, id) {
-  Favoritos.addFavorito(id)
-    .then(function (response) {
-      utils.writeJson(res, response);
-    })
-    .catch(function (response) {
-      utils.writeJson(res, response);
-    });
+module.exports.addFavorito = (req, res, next, id) => {
+  Favoritos.addFavorito(id).then( (response) => {
+    writer.writeJson(res, response);
+  }).catch( (response) => {
+    writer.writeJson(res, response);
+  });
 };
 
-module.exports.listFavoritos = function listFavoritos (req, res, next) {
-  Favoritos.listFavoritos()
-    .then(function (response) {
-      utils.writeJson(res, response);
-    })
-    .catch(function (response) {
-      utils.writeJson(res, response);
-    });
+module.exports.listFavoritos = (req, res, next) => {
+  Favoritos.listFavoritos().then( (response) => {
+    writer.writeJson(res, response);
+  }).catch( (response) => {
+    writer.writeJson(res, response);
+  });
 };
 
-module.exports.removeFavorito = function removeFavorito (req, res, next, id) {
-  Favoritos.removeFavorito(id)
-    .then(function (response) {
-      utils.writeJson(res, response);
-    })
-    .catch(function (response) {
-      utils.writeJson(res, response);
-    });
+module.exports.removeFavorito = (req, res, next, id) => {
+  Favoritos.removeFavorito(id).then( (response) => {
+    writer.writeJson(res, response);
+  }).catch( (response) => {
+    writer.writeJson(res, response);
+  });
 };

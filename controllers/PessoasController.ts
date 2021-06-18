@@ -6,8 +6,8 @@
  *
  * returns BasicResponse
  **/
-exports.createPessoa = function() {
-  return new Promise<void>(function(resolve, reject) {
+exports.createPessoa = () => {
+  return new Promise<void>((resolve, reject) => {
     resolve()
   });
 }
@@ -19,8 +19,8 @@ exports.createPessoa = function() {
  * id Integer Id da pessoa a ser excluída
  * returns BasicResponse
  **/
-exports.deletePessoa = function(id) {
-  return new Promise<void>(function(resolve, reject) {
+exports.deletePessoa = (id) => {
+  return new Promise<void>((resolve, reject) => {
     resolve()
   });
 }
@@ -32,8 +32,8 @@ exports.deletePessoa = function(id) {
  * page Integer 
  * returns PessoaArray
  **/
-exports.filterPessoa = function(page) {
-  return new Promise<void>(function(resolve, reject) {
+exports.filterPessoa = (page) => {
+  return new Promise<void>((resolve, reject) => {
     resolve()
   });
 }
@@ -45,8 +45,8 @@ exports.filterPessoa = function(page) {
  * id Integer Id da pessoa a ser encontrada
  * returns PessoaJson
  **/
-exports.findPessoaById = function(id) {
-  return new Promise<void>(function(resolve, reject) {
+exports.findPessoaById = (id) => {
+  return new Promise<void>((resolve, reject) => {
     resolve()
   });
 }
@@ -58,8 +58,8 @@ exports.findPessoaById = function(id) {
  * id Integer Id da pessoa a ser atualizada
  * returns BasicResponse
  **/
-exports.updatePessoa = function(id) {
-  return new Promise<void>(function(resolve, reject) {
+exports.updatePessoa = (id) => {
+  return new Promise<void>((resolve, reject) => {
     resolve()
   });
 }

@@ -7,9 +7,9 @@
  * id Integer Id da pessoa a ser adicionada aos favoritos
  * returns BasicResponse
  **/
-exports.addFavorito = function(id) {
-  return new Promise<void>(function(resolve, reject) {
-    resolve()
+exports.addFavorito = (id) => {
+  return new Promise((accept, reject) => {
+    accept()
   });
 }
 
@@ -19,10 +19,10 @@ exports.addFavorito = function(id) {
  *
  * returns FavoritoArray
  **/
-exports.listFavoritos = function() {
-  return new Promise<void>(function(resolve, reject) {
-    resolve()
-  });
+exports.listFavoritos = () => {
+  return new Promise((accept, reject) => {
+    accept();
+  })
 }
 
 
@@ -32,9 +32,9 @@ exports.listFavoritos = function() {
  * id Integer Id da pessoa a ser removida dos favoritos
  * returns BasicResponse
  **/
-exports.removeFavorito = function(id) {
-  return new Promise<void>(function(resolve, reject) {
-    resolve()
+exports.removeFavorito = (id) => {
+  return new Promise((accept, reject) => {
+    accept()
   });
 }
 

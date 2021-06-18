@@ -7,8 +7,8 @@
  * withoutUser Boolean  (optional)
  * returns PessoaArray
  **/
-exports.filterPessoas = function(withoutUser) {
-  return new Promise<void>(function(resolve, reject) {
+exports.filterPessoas = (withoutUser) => {
+  return new Promise<void>((resolve, reject) => {
   resolve()
   });
 }
@@ -20,8 +20,8 @@ exports.filterPessoas = function(withoutUser) {
  * estadoId Integer Id do estado do qual listar as cidades
  * returns CidadeArray
  **/
-exports.listCidades = function(estadoId) {
-  return new Promise<void>(function(resolve, reject) {
+exports.listCidades = (estadoId) => {
+  return new Promise<void>((resolve, reject) => {
     resolve()
   });
 }
@@ -32,8 +32,8 @@ exports.listCidades = function(estadoId) {
  *
  * returns ContatoCategoriaArray
  **/
-exports.listContatoCategorias = function() {
-  return new Promise<void>(function(resolve, reject) {
+exports.listContatoCategorias = () => {
+  return new Promise<void>((resolve, reject) => {
     resolve()
   });
 }
@@ -44,8 +44,8 @@ exports.listContatoCategorias = function() {
  *
  * returns ContatoTipoArray
  **/
-exports.listContatoTipos = function() {
-  return new Promise<void>(function(resolve, reject) {
+exports.listContatoTipos = () => {
+  return new Promise<void>((resolve, reject) => {
     resolve()
   });
 }
@@ -57,8 +57,8 @@ exports.listContatoTipos = function() {
  * paisId Integer Id do país do qual listar os estados
  * returns EstadoArray
  **/
-exports.listEstados = function(paisId) {
-  return new Promise<void>(function(resolve, reject) {
+exports.listEstados = (paisId) => {
+  return new Promise<void>((resolve, reject) => {
     resolve()
   });
 }
@@ -69,8 +69,8 @@ exports.listEstados = function(paisId) {
  *
  * returns PaisArray
  **/
-exports.listPaises = function() {
-  return new Promise<void>(function(resolve, reject) {
+exports.listPaises = () => {
+  return new Promise<void>((resolve, reject) => {
     resolve()
   });
 }

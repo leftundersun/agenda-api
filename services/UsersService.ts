@@ -7,8 +7,8 @@
  * returns BasicResponse
  **/
 exports.createUser = function() {
-  return new Promise<void>(function(resolve, reject) {
-    resolve()
+  return new Promise(function(accept, reject) {
+    accept()
   });
 }
 
@@ -20,8 +20,8 @@ exports.createUser = function() {
  * returns BasicResponse
  **/
 exports.deleteUser = function(id) {
-  return new Promise<void>(function(resolve, reject) {
-    resolve()
+  return new Promise(function(accept, reject) {
+    accept()
   });
 }
 
@@ -33,8 +33,8 @@ exports.deleteUser = function(id) {
  * returns UserArray
  **/
 exports.filterUser = function(page) {
-  return new Promise<void>(function(resolve, reject) {
-    resolve()
+  return new Promise(function(accept, reject) {
+    accept()
   });
 }
 
@@ -46,8 +46,8 @@ exports.filterUser = function(page) {
  * returns UserJson
  **/
 exports.findUserById = function(id) {
-  return new Promise<void>(function(resolve, reject) {
-    resolve()
+  return new Promise(function(accept, reject) {
+    accept()
   });
 }
 
@@ -58,8 +58,8 @@ exports.findUserById = function(id) {
  * returns UserJson
  **/
 exports.getUser = function() {
-  return new Promise<void>(function(resolve, reject) {
-    resolve()
+  return new Promise(function(accept, reject) {
+    accept()
   });
 }
 
@@ -71,8 +71,7 @@ exports.getUser = function() {
  * returns BasicResponse
  **/
 exports.updateUser = function(id) {
-  return new Promise<void>(function(resolve, reject) {
-    resolve()
+  return new Promise(function(accept, reject) {
+    accept()
   });
 }
-

@@ -1,14 +1,12 @@
 'use strict';
 
-var utils = require('../utils/writer.ts');
-var Auth = require('../service/AuthService');
+var writer = require('../utils/writer.ts');
+var Auth = require('../controllers/AuthController');
 
-module.exports.login = function login (req, res, next) {
-  Auth.login()
-    .then(function (response) {
-      utils.writeJson(res, response);
-    })
-    .catch(function (response) {
-      utils.writeJson(res, response);
-    });
+module.exports.login = (req, res, next) => {
+  Auth.login().then( (response) => {
+    writer.writeJson(res, response);
+  }).catch( (response) => {
+    writer.writeJson(res, response);
+  });
 };
