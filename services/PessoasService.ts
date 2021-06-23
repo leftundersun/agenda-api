@@ -7,7 +7,7 @@
  * returns BasicResponse
  **/
 exports.createPessoa = () => {
-  return new Promise((accept, reject) => {
+  return new Promise<void>((accept, reject) => {
     accept()
   });
 }
@@ -20,7 +20,7 @@ exports.createPessoa = () => {
  * returns BasicResponse
  **/
 exports.deletePessoa = (id) => {
-  return new Promise((accept, reject) => {
+  return new Promise<void>((accept, reject) => {
     accept()
   });
 }
@@ -33,7 +33,7 @@ exports.deletePessoa = (id) => {
  * returns PessoaArray
  **/
 exports.filterPessoa = (page) => {
-  return new Promise((accept, reject) => {
+  return new Promise<void>((accept, reject) => {
     accept()
   });
 }
@@ -46,7 +46,7 @@ exports.filterPessoa = (page) => {
  * returns PessoaJson
  **/
 exports.findPessoaById = (id) => {
-  return new Promise((accept, reject) => {
+  return new Promise<void>((accept, reject) => {
     accept()
   });
 }
@@ -59,7 +59,7 @@ exports.findPessoaById = (id) => {
  * returns BasicResponse
  **/
 exports.updatePessoa = (id) => {
-  return new Promise((accept, reject) => {
+  return new Promise<void>((accept, reject) => {
     accept()
   });
 }

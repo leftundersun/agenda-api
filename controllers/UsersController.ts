@@ -1,5 +1,7 @@
 'use strict';
 
+var writer = require('../utils/writer.ts');
+var UserSrvc = require('../services/UsersService');
 
 /**
  * Criar um novo usuário
@@ -7,8 +9,8 @@
  * returns BasicResponse
  **/
 exports.createUser = () => {
-  return new Promise<void>((resolve, reject) => {
-    resolve()
+  return new Promise<ResponsePayload>((accept, reject) => {
+    accept( writer.respondWithCode(501) )
   });
 }
 
@@ -20,8 +22,8 @@ exports.createUser = () => {
  * returns BasicResponse
  **/
 exports.deleteUser = (id) => {
-  return new Promise<void>((resolve, reject) => {
-    resolve()
+  return new Promise<ResponsePayload>((accept, reject) => {
+    accept( writer.respondWithCode(501) )
   });
 }
 
@@ -33,8 +35,8 @@ exports.deleteUser = (id) => {
  * returns UserArray
  **/
 exports.filterUser = (page) => {
-  return new Promise<void>((resolve, reject) => {
-    resolve()
+  return new Promise<ResponsePayload>((accept, reject) => {
+    accept( writer.respondWithCode(501) )
   });
 }
 
@@ -46,8 +48,8 @@ exports.filterUser = (page) => {
  * returns UserJson
  **/
 exports.findUserById = (id) => {
-  return new Promise<void>((resolve, reject) => {
-    resolve()
+  return new Promise<ResponsePayload>((accept, reject) => {
+    accept( writer.respondWithCode(501) )
   });
 }
 
@@ -57,9 +59,13 @@ exports.findUserById = (id) => {
  *
  * returns UserJson
  **/
-exports.getUser = () => {
-  return new Promise<void>((resolve, reject) => {
-    resolve()
+exports.getUser = (loggedUserId) => {
+  return new Promise<ResponsePayload>((accept, reject) => {
+    UserSrvc.getUser(loggedUserId).then( (user) => {
+      accept( writer.respondWithCode(200, { user: user }) )
+    }).catch( (err) => {
+      reject( writer.tratarErro(err) )
+    })
   });
 }
 
@@ -71,8 +77,8 @@ exports.getUser = () => {
  * returns BasicResponse
  **/
 exports.updateUser = (id) => {
-  return new Promise<void>((resolve, reject) => {
-    resolve()
+  return new Promise<ResponsePayload>((accept, reject) => {
+    accept( writer.respondWithCode(501) )
   });
 }
 

@@ -8,8 +8,8 @@
  * returns BasicResponse
  **/
 exports.addFavorito = (id) => {
-  return new Promise<void>((resolve, reject) => {
-    resolve()
+  return new Promise<void>((accept, reject) => {
+    accept()
   });
 }
 
@@ -20,8 +20,8 @@ exports.addFavorito = (id) => {
  * returns FavoritoArray
  **/
 exports.listFavoritos = () => {
-  return new Promise<void>((resolve, reject) => {
-    resolve()
+  return new Promise<void>((accept, reject) => {
+    accept()
   });
 }
 
@@ -33,8 +33,8 @@ exports.listFavoritos = () => {
  * returns BasicResponse
  **/
 exports.removeFavorito = (id) => {
-  return new Promise<void>((resolve, reject) => {
-    resolve()
+  return new Promise<void>((accept, reject) => {
+    accept()
   });
 }
 

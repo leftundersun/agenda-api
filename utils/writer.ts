@@ -8,7 +8,17 @@ class ResponsePayload {
   }
 }
 
-exports.respondWithCode = (code, payload) => {
+var tratarErro = (err) => {
+  if (err != null && err != undefined && err instanceof ResponsePayload ) {
+    return(err)
+  } else {
+    console.log('########### err')
+    console.log(err)
+    return new ResponsePayload(500, { message: 'Erro interno do servidor' })
+  }
+}
+
+var respondWithCode = (code, payload) => {
   return new ResponsePayload(code, payload);
 }
 
@@ -48,3 +58,5 @@ var writeJson = (response, arg1, arg2) => {
 }
 
 exports.writeJson = writeJson
+exports.tratarErro = tratarErro
+exports.respondWithCode = respondWithCode

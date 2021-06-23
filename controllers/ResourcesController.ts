@@ -8,8 +8,8 @@
  * returns PessoaArray
  **/
 exports.filterPessoas = (withoutUser) => {
-  return new Promise<void>((resolve, reject) => {
-  resolve()
+  return new Promise<void>((accept, reject) => {
+    accept()
   });
 }
 
@@ -21,8 +21,8 @@ exports.filterPessoas = (withoutUser) => {
  * returns CidadeArray
  **/
 exports.listCidades = (estadoId) => {
-  return new Promise<void>((resolve, reject) => {
-    resolve()
+  return new Promise<void>((accept, reject) => {
+    accept()
   });
 }
 
@@ -33,8 +33,8 @@ exports.listCidades = (estadoId) => {
  * returns ContatoCategoriaArray
  **/
 exports.listContatoCategorias = () => {
-  return new Promise<void>((resolve, reject) => {
-    resolve()
+  return new Promise<void>((accept, reject) => {
+    accept()
   });
 }
 
@@ -45,8 +45,8 @@ exports.listContatoCategorias = () => {
  * returns ContatoTipoArray
  **/
 exports.listContatoTipos = () => {
-  return new Promise<void>((resolve, reject) => {
-    resolve()
+  return new Promise<void>((accept, reject) => {
+    accept()
   });
 }
 
@@ -58,8 +58,8 @@ exports.listContatoTipos = () => {
  * returns EstadoArray
  **/
 exports.listEstados = (paisId) => {
-  return new Promise<void>((resolve, reject) => {
-    resolve()
+  return new Promise<void>((accept, reject) => {
+    accept()
   });
 }
 
@@ -70,8 +70,8 @@ exports.listEstados = (paisId) => {
  * returns PaisArray
  **/
 exports.listPaises = () => {
-  return new Promise<void>((resolve, reject) => {
-    resolve()
+  return new Promise<void>((accept, reject) => {
+    accept()
   });
 }
 

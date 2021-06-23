@@ -2,13 +2,16 @@
 
 var writer = require('../utils/writer.ts');
 var Pessoas = require('../controllers/PessoasController');
+var AuthSrvc = require('../services/AuthService');
 
 module.exports.createPessoa = (req, res, next) => {
-  Pessoas.createPessoa().then( (response) => {
-    writer.writeJson(res, response);
-  }).catch( (response) => {
-    writer.writeJson(res, response);
-  });
+  AuthSrvc.verifyToken(req, res, (userId) => {
+    Pessoas.createPessoa(req.body.pessoa, req.files, userId).then( (response) => {
+      writer.writeJson(res, response);
+    }).catch( (response) => {
+      writer.writeJson(res, response);
+    });
+  })
 };
 
 module.exports.deletePessoa = (req, res, next, id) => {

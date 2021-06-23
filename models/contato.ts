@@ -3,6 +3,10 @@ module.exports = function (sequelize: any, Sequelize: any) {
         valor: {
             type: Sequelize.STRING(50),
             allowNull: false
+        },
+        publico: {
+            type: Sequelize.BOOLEAN,
+            allowNull: false
         }
     }, {
         underscored: true

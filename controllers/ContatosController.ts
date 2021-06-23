@@ -8,8 +8,8 @@
  * returns BasicResponse
  **/
 exports.createContato = (body) => {
-  return new Promise<void>((resolve, reject) => {
-    resolve()
+  return new Promise<void>((accept, reject) => {
+    accept()
   });
 }
 
@@ -21,8 +21,8 @@ exports.createContato = (body) => {
  * returns BasicResponse
  **/
 exports.deleteContato = (id) => {
-  return new Promise<void>((resolve, reject) => {
-    resolve()
+  return new Promise<void>((accept, reject) => {
+    accept()
   });
 }
 
@@ -34,8 +34,8 @@ exports.deleteContato = (id) => {
  * returns ContatoArray
  **/
 exports.filterContato = (page) => {
-  return new Promise<void>((resolve, reject) => {
-    resolve()
+  return new Promise<void>((accept, reject) => {
+    accept()
   });
 }
 
@@ -47,8 +47,8 @@ exports.filterContato = (page) => {
  * returns ContatoJson
  **/
 exports.findContatoById = (id) => {
-  return new Promise<void>((resolve, reject) => {
-    resolve()
+  return new Promise<void>((accept, reject) => {
+    accept()
   });
 }
 
@@ -61,8 +61,8 @@ exports.findContatoById = (id) => {
  * returns BasicResponse
  **/
 exports.updateContato = (body,id) => {
-  return new Promise<void>((resolve, reject) => {
-    resolve()
+  return new Promise<void>((accept, reject) => {
+    accept()
   });
 }
 

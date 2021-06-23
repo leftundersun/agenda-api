@@ -2,13 +2,16 @@
 
 var writer = require('../utils/writer.ts');
 var Users = require('../controllers/UsersController');
+var AuthSrvc = require('../services/AuthService');
 
 module.exports.createUser = (req, res, next) => {
-  Users.createUser().then( (response) => {
-    writer.writeJson(res, response);
-  }).catch( (response) => {
-    writer.writeJson(res, response);
-  });
+  AuthSrvc.verifyToken(req, res, (userId) => {
+    Users.createUser(req.body, req.files, userId).then( (response) => {
+      writer.writeJson(res, response);
+    }).catch( (response) => {
+      writer.writeJson(res, response);
+    });
+  })
 };
 
 module.exports.deleteUser = (req, res, next, id) => {
@@ -36,11 +39,13 @@ module.exports.findUserById = (req, res, next, id) => {
 };
 
 module.exports.getUser = (req, res, next) => {
-  Users.getUser().then( (response) => {
-    writer.writeJson(res, response);
-  }).catch( (response) => {
-    writer.writeJson(res, response);
-  });
+  AuthSrvc.verifyToken(req, res, (userId) => {
+    Users.getUser(userId).then( (response) => {
+      writer.writeJson(res, response);
+    }).catch( (response) => {
+      writer.writeJson(res, response);
+    });
+  })
 };
 
 module.exports.updateUser = (req, res, next, id) => {

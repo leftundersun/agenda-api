@@ -1,0 +1,44 @@
+  /auth/login:
+    get: any user
+  /user:
+    get: any user
+    post: admin user
+  /user/{id}:
+    get: admin user
+    put: admin user
+    delete: admin user
+  /user/list:
+    get: admin user
+  /contato:
+    post: any user
+  /contato/{id}:
+    get: any user
+    put: owner only
+    delete: owner only
+  /contato/list:
+    get: any user
+  /pessoa:
+    post: any user
+  /pessoa/{id}:
+    get: any user
+    put: if pessoa belongs to an user, then only him can do it, else, any user
+    delete: if pessoa belongs to an user, no one can do it, else, only admin
+  /pessoa/list:
+    get: any user
+  /resources/contato-tipos:
+    get: any user
+  /resources/contato-categorias:
+    get: any user
+  /resources/pessoas:
+    get: any user
+  /resources/paises:
+    get: any user
+  /resources/estados/{paisId}:
+    get: any user
+  /resources/cidades/{estadoId}:
+    get: any user
+  /favoritos/list:
+    get: any user
+  /favoritos/{id}:
+    put: any user
+    delete: any user

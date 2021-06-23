@@ -2,13 +2,16 @@
 
 var writer = require('../utils/writer.ts');
 var Contatos = require('../controllers/ContatosController');
+var AuthSrvc = require('../services/AuthService');
 
 module.exports.createContato = (req, res, next, body) => {
-  Contatos.createContato(body).then( (response) => {
-    writer.writeJson(res, response);
-  }).catch( (response) => {
-    writer.writeJson(res, response);
-  });
+  AuthSrvc.verifyToken(req, res, (userId) => {
+    Contatos.createContato(body, userId).then( (response) => {
+      writer.writeJson(res, response);
+    }).catch( (response) => {
+      writer.writeJson(res, response);
+    });
+  })
 };
 
 module.exports.deleteContato = (req, res, next, id) => {

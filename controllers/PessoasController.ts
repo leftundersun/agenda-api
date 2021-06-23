@@ -1,14 +1,23 @@
 'use strict';
 
+var writer = require('../utils/writer.ts');
+var PessoaSrvc = require('../services/PessoasService');
+
 
 /**
  * Criar uma nova pessoa
  *
  * returns BasicResponse
  **/
-exports.createPessoa = () => {
-  return new Promise<void>((resolve, reject) => {
-    resolve()
+exports.createPessoa = (body, files, loggedUserId) => {
+  return new Promise<ResponsePayload>((accept, reject) => {
+    console.log('######################## body')
+    console.log(body)
+    console.log('######################## files')
+    console.log(files)
+    console.log('######################## loggedUserId')
+    console.log(loggedUserId)
+    accept( writer.respondWithCode(200) )
   });
 }
 
@@ -20,8 +29,8 @@ exports.createPessoa = () => {
  * returns BasicResponse
  **/
 exports.deletePessoa = (id) => {
-  return new Promise<void>((resolve, reject) => {
-    resolve()
+  return new Promise<ResponsePayload>((accept, reject) => {
+    accept( writer.respondWithCode(501) )
   });
 }
 
@@ -33,8 +42,8 @@ exports.deletePessoa = (id) => {
  * returns PessoaArray
  **/
 exports.filterPessoa = (page) => {
-  return new Promise<void>((resolve, reject) => {
-    resolve()
+  return new Promise<ResponsePayload>((accept, reject) => {
+    accept( writer.respondWithCode(501) )
   });
 }
 
@@ -46,8 +55,8 @@ exports.filterPessoa = (page) => {
  * returns PessoaJson
  **/
 exports.findPessoaById = (id) => {
-  return new Promise<void>((resolve, reject) => {
-    resolve()
+  return new Promise<ResponsePayload>((accept, reject) => {
+    accept( writer.respondWithCode(501) )
   });
 }
 
@@ -59,8 +68,8 @@ exports.findPessoaById = (id) => {
  * returns BasicResponse
  **/
 exports.updatePessoa = (id) => {
-  return new Promise<void>((resolve, reject) => {
-    resolve()
+  return new Promise<ResponsePayload>((accept, reject) => {
+    accept( writer.respondWithCode(501) )
   });
 }
 

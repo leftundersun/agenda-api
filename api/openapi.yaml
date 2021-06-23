@@ -24,7 +24,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/inline_response_200'
+                $ref: '#/components/schemas/BasicResponse'
       security:
       - basic: []
       x-swagger-router-controller: Auth
@@ -896,6 +896,8 @@ components:
           type: integer
         valor:
           type: string
+        publico:
+          type: boolean
         user:
           $ref: '#/components/schemas/UserJson'
         pessoa:
@@ -971,7 +973,6 @@ components:
           format: binary
         user:
           type: string
-          format: json
     UserArray:
       type: array
       items:
@@ -1181,7 +1182,6 @@ components:
           format: binary
         pessoa:
           type: string
-          format: json
     PessoaJson:
       type: object
       properties:
