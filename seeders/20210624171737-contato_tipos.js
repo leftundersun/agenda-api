@@ -2,10 +2,12 @@
 
 module.exports = {
     up: (queryInterface, Sequelize) => {
-        return queryInterface.bulkInsert('roles', [{
-            descricao: 'admin'
+        return queryInterface.bulkInsert('contato_tipos', [{
+            descricao: 'Celular'
         },{
-            descricao: 'user'
+            descricao: 'Telefone'
+        },{
+            descricao: 'E-mail'
         }]);
     },
 

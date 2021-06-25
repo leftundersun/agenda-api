@@ -1,12 +1,11 @@
 'use strict';
 var db = require('../models')
 var Op = db.Sequelize.Op
-var Contato = db.contato
-var writer = require('../utils/writer.ts');
+var Endereco = db.endereco
 
-exports.createContato = (data, userId, tx) => {
+exports.createEndereco = (data, userId, tx) => {
     return new Promise<void>((accept, reject) => {
-        Contato.create(data, { transaction: tx }).then( () => {
+        Endereco.create(data, { transaction: tx }).then( () => {
             accept()
         }).catch( (err) => {
             reject(err)
@@ -14,27 +13,20 @@ exports.createContato = (data, userId, tx) => {
     });
 }
 
-exports.deleteContato = (id) => {
+exports.deleteEndereco = (id) => {
     return new Promise<void>((accept, reject) => {
         accept()
     });
 }
 
-exports.filterContato = (page) => {
+exports.findEnderecoById = (id) => {
     return new Promise<void>((accept, reject) => {
         accept()
     });
 }
 
-exports.findContatoById = (id) => {
+exports.updateEndereco = (id) => {
     return new Promise<void>((accept, reject) => {
         accept()
     });
 }
-
-exports.updateContato = (body,id) => {
-    return new Promise<void>((accept, reject) => {
-        accept()
-    });
-}
-

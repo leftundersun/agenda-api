@@ -15,11 +15,11 @@ gulp.task("default", function () {
     ).pipe(
       gulp.src(
         [
-          '*',
-          '.*',
-          '**/*',
-          '!**/*.ts',
-          '!node_modules/*'
+            '*',
+            '.*',
+            '**/*',
+            '!**/*.ts',
+            '!node_modules/*'
         ]
       )
     ).pipe(gulp.dest("../dist"));

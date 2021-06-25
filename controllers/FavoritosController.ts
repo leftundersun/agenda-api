@@ -1,5 +1,7 @@
 'use strict';
-
+var db = require('../models')
+var writer = require('../utils/writer.ts');
+var FavoritoSrvc = require('../services/FavoritosService');
 
 /**
  * Adicionar um contato aos favoritos
@@ -7,10 +9,22 @@
  * id Integer Id da pessoa a ser adicionada aos favoritos
  * returns BasicResponse
  **/
-exports.addFavorito = (id) => {
-  return new Promise<void>((accept, reject) => {
-    accept()
-  });
+exports.addFavorito = (id, userId) => {
+    return new Promise<void>((accept, reject) => {
+        db.sequelize.transaction( (tx) => {
+            return new Promise<void>((accept, reject) => {
+                FavoritoSrvc.addFavorito(id, userId, tx).then( () => {
+                    accept( writer.respondWithCode(200, { message: 'Contato adicionado aos seus favoritos' }) )
+                }).catch( (err) => {
+                    reject(err)
+                })
+            })
+        }).then( (response) => {
+            accept(response)
+        }).catch( (err) => {
+            reject( writer.tratarErro(err) )
+        })
+    });
 }
 
 
@@ -20,9 +34,9 @@ exports.addFavorito = (id) => {
  * returns FavoritoArray
  **/
 exports.listFavoritos = () => {
-  return new Promise<void>((accept, reject) => {
-    accept()
-  });
+    return new Promise<void>((accept, reject) => {
+        accept( writer.respondWithCode(501) )
+    });
 }
 
 
@@ -33,8 +47,8 @@ exports.listFavoritos = () => {
  * returns BasicResponse
  **/
 exports.removeFavorito = (id) => {
-  return new Promise<void>((accept, reject) => {
-    accept()
-  });
+    return new Promise<void>((accept, reject) => {
+        accept( writer.respondWithCode(501) )
+    });
 }
 
