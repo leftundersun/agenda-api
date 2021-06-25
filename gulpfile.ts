@@ -17,7 +17,9 @@ gulp.task("default", function () {
         [
             '*',
             '.*',
+            '!*.ts',
             '**/*',
+            '.**/*',
             '!**/*.ts',
             '!node_modules/*'
         ]
