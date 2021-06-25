@@ -31,7 +31,7 @@ Object.keys(db).forEach(modelName => {
 });
 
 db.pais.hasMany(db.estado, { foreignKey: 'pais_id' })
-db.estado.belongsTo(db.pais, { foreignKey: 'pais_id' })
+db.estado.belongsTo(db.pais, { foreignKey: 'pais_id', as: 'pais' })
 
 db.estado.hasMany(db.cidade, { foreignKey: 'estado_id' })
 db.cidade.belongsTo(db.estado, { foreignKey: 'estado_id' })
@@ -52,10 +52,10 @@ db.user.hasMany(db.contato, { foreignKey: 'user_id' })
 db.contato.belongsTo(db.user, { foreignKey: 'user_id' })
 
 db.contatoTipo.hasMany(db.contato, { foreignKey: 'contato_tipo_id' })
-db.contato.belongsTo(db.contatoTipo, { foreignKey: 'contato_tipo_id' })
+db.contato.belongsTo(db.contatoTipo, { foreignKey: 'contato_tipo_id', as: 'tipo' })
 
 db.contatoCategoria.hasMany(db.contato, { foreignKey: 'contato_categoria_id' })
-db.contato.belongsTo(db.contatoCategoria, { foreignKey: 'contato_categoria_id', as: 'contatoCategoria' })
+db.contato.belongsTo(db.contatoCategoria, { foreignKey: 'contato_categoria_id', as: 'categoria' })
 
 db.user.belongsToMany(db.role, { through: 'user_roles' })
 db.role.belongsToMany(db.user, { through: 'user_roles' })

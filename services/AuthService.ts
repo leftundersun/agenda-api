@@ -81,10 +81,14 @@ exports.verifyToken = (req, res, next, roles=[]) => {
 
 var extractTokenFromReq = (req) => {
     return new Promise<Array<string>>( (accept, reject) => {
-        var authHeader = req.headers.authorization.split('Bearer ')
-        if (authHeader.length == 2) {
-            var token = authHeader[1]
-            accept(token)
+        if (req.headers.hasOwnProperty('authorization')) {
+            var authHeader = req.headers['authorization'].split('Bearer ')
+            if (authHeader.length == 2) {
+                var token = authHeader[1]
+                accept(token)
+            } else {
+                reject( writer.respondWithCode(401, { message: 'Token inválido' }) )
+            }
         } else {
             reject( writer.respondWithCode(401, { message: 'Token inválido' }) )
         }
@@ -93,10 +97,14 @@ var extractTokenFromReq = (req) => {
 
 var extractUserAndPassFromReq = (req) => {
     return new Promise<Array<string>>( (accept, reject) => {
-        var authHeader = req.headers.authorization.split('Basic ')
-        if (authHeader.length == 2) {
-            var credentials = Buffer.from(authHeader[1], 'base64').toString().split(':')
-            accept(credentials)
+        if (req.headers.hasOwnProperty('authorization')) {
+            var authHeader = req.headers['authorization'].split('Basic ')
+            if (authHeader.length == 2) {
+                var credentials = Buffer.from(authHeader[1], 'base64').toString().split(':')
+                accept(credentials)
+            } else {
+                reject( writer.respondWithCode(401, { message: 'Usuário ou senha inválidos' }) )
+            }
         } else {
             reject( writer.respondWithCode(401, { message: 'Usuário ou senha inválidos' }) )
         }

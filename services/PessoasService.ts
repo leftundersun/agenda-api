@@ -13,7 +13,7 @@ exports.createPessoa = (data, userId, tx, ft) => {
         FileSrvc.saveFoto( data.foto, ft, tx ).then( (filename) => {
             data.foto = filename ?? ''
             Pessoa.create( data, { transaction: tx } ).then( (pessoa) => {
-                data.endereco.pessoa_id
+                data.endereco.pessoa_id = pessoa.id
                 EnderecosSrvc.createEndereco(data.endereco, userId, tx).then( () => {
                     createContatos(data.contatos, pessoa.id, userId, tx).then( () => {
                         accept()

@@ -54,7 +54,10 @@ exports.getUser = (id) => {
                             model: Cidade,
                             include: {
                                 model: Estado,
-                                include: Pais
+                                include: {
+                                    model: Pais,
+                                    as: 'pais'
+                                }
                             }
                         }
                     }
@@ -62,8 +65,19 @@ exports.getUser = (id) => {
                     model: Pessoa,
                     as: 'favoritos',
                     include: [
-                        Endereco,
                         {
+                            model: Endereco,
+                            include: {
+                                model: Cidade,
+                                include: {
+                                    model: Estado,
+                                    include: {
+                                        model: Pais,
+                                        as: 'pais'
+                                    }
+                                }
+                            }
+                        },{
                             model: Contato,
                             required: false,
                             where: {
@@ -78,7 +92,17 @@ exports.getUser = (id) => {
                                         }
                                     }
                                 ]
-                            }
+                            },
+                            include: [
+                                {
+                                    model: ContatoTipo,
+                                    as: 'tipo'
+                                },
+                                {
+                                    model: ContatoCategoria,
+                                    as: 'categoria'
+                                }
+                            ]
                         }
                     ]
                 }
