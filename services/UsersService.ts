@@ -11,7 +11,10 @@ var Pais = db.pais
 var Contato = db.contato
 var ContatoCategoria = db.contatoCategoria
 var ContatoTipo = db.contatoTipo
+var FileSrvc = require('./FileService');
+var ResourceSrvc = require('./ResourcesService');
 var writer = require('../utils/writer.ts');
+var foreach = require('../utils/foreach').foreach;
 
 exports.createUser = () => {
     return new Promise<void>((accept, reject) => {
@@ -96,11 +99,11 @@ exports.getUser = (id) => {
                             include: [
                                 {
                                     model: ContatoTipo,
-                                    as: 'tipo'
+                                    as: 'contatoTipo'
                                 },
                                 {
                                     model: ContatoCategoria,
-                                    as: 'categoria'
+                                    as: 'contatoCategoria'
                                 }
                             ]
                         }
@@ -110,7 +113,12 @@ exports.getUser = (id) => {
         }
         User.findOne(options).then( (user) => {
             if (user != null && user != undefined) {
-                accept( formatUser(user) )
+                ResourceSrvc.getFotos(user.favoritos).then( (pessoas) => {
+                    user.favoritos = pessoas
+                    accept( formatUser(user) )
+                }).catch( (err) => {
+                    reject(err)
+                })
             } else {
                 reject( writer.respondWithCode(404, { message: 'Usuário não encontrado' }) )
             }

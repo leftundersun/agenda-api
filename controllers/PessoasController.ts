@@ -8,13 +8,13 @@ var TransactionSrvc = require('../services/TransactionService');
  *
  * returns BasicResponse
  **/
-exports.createPessoa = (body, files, loggedUserId) => {
+exports.createPessoa = (body, files, userId) => {
     return new Promise<ResponsePayload>((accept, reject) => {
         TransactionSrvc.transaction( (tx, ft) => {
             return new Promise<ResponsePayload>((accept, reject) => {
                 var data = JSON.parse(body.pessoa)
                 data.foto = files[0]
-                PessoaSrvc.createPessoa(data, loggedUserId, tx, ft).then( () => {
+                PessoaSrvc.createPessoa(data, userId, tx, ft).then( () => {
                     accept( writer.respondWithCode( 201, { message: 'Pessoa criada com sucesso' }) )
                 }).catch( (err) => {
                     reject(err)
@@ -35,9 +35,21 @@ exports.createPessoa = (body, files, loggedUserId) => {
  * id Integer Id da pessoa a ser excluída
  * returns BasicResponse
  **/
-exports.deletePessoa = (id) => {
+exports.deletePessoa = (id, userId) => {
     return new Promise<ResponsePayload>((accept, reject) => {
-        accept( writer.respondWithCode(501) )
+        TransactionSrvc.transaction( (tx, ft) => {
+            return new Promise<ResponsePayload>((accept, reject) => {
+                PessoaSrvc.deletePessoa(id, userId, tx, ft).then( () => {
+                    accept( writer.respondWithCode( 200, { message: 'Pessoa excluída com sucesso' }) )
+                }).catch( (err) => {
+                    reject(err)
+                })
+            })
+        }).then( (response) => {
+            accept( response )
+        }).catch( (err) => {
+            reject( writer.tratarErro(err) )
+        })
     });
 }
 
@@ -45,12 +57,17 @@ exports.deletePessoa = (id) => {
 /**
  * Filtrar pessoas
  *
- * page Integer 
+ * page Integer
+ * search String
  * returns PessoaArray
  **/
-exports.filterPessoa = (page) => {
+exports.filterPessoa = (page, search, userId) => {
     return new Promise<ResponsePayload>((accept, reject) => {
-        accept( writer.respondWithCode(501) )
+        PessoaSrvc.filterPessoa(page, search, userId).then( (response) => {
+            accept( writer.respondWithCode(200, response) )
+        }).catch( (err) => {
+            reject( writer.tratarErro(err) )
+        })
     });
 }
 

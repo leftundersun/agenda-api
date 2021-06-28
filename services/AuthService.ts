@@ -41,7 +41,7 @@ exports.login = (req) => {
     })
 }
 
-exports.verifyToken = (req, res, next, roles=[]) => {
+exports.verifyToken = (req, res, roles, next) => {
     extractTokenFromReq(req).then( (token) => {
         jwt.verify(token, process.env.TOKEN_SECRET, (err, decoded) => {
             if (err) {

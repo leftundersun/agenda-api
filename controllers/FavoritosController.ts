@@ -10,16 +10,16 @@ var FavoritoSrvc = require('../services/FavoritosService');
  * returns BasicResponse
  **/
 exports.addFavorito = (id, userId) => {
-    return new Promise<void>((accept, reject) => {
+    return new Promise<ResponsePayload>((accept, reject) => {
         db.sequelize.transaction( (tx) => {
-            return new Promise<void>((accept, reject) => {
+            return new Promise<ResponsePayload>((accept, reject) => {
                 FavoritoSrvc.addFavorito(id, userId, tx).then( () => {
                     accept( writer.respondWithCode(200, { message: 'Contato adicionado aos seus favoritos' }) )
                 }).catch( (err) => {
                     reject(err)
                 })
             })
-        }).then( (response) => {
+        }).then( (response: ResponsePayload) => {
             accept(response)
         }).catch( (err) => {
             reject( writer.tratarErro(err) )
@@ -34,7 +34,7 @@ exports.addFavorito = (id, userId) => {
  * returns FavoritoArray
  **/
 exports.listFavoritos = () => {
-    return new Promise<void>((accept, reject) => {
+    return new Promise<ResponsePayload>((accept, reject) => {
         accept( writer.respondWithCode(501) )
     });
 }
@@ -46,9 +46,21 @@ exports.listFavoritos = () => {
  * id Integer Id da pessoa a ser removida dos favoritos
  * returns BasicResponse
  **/
-exports.removeFavorito = (id) => {
-    return new Promise<void>((accept, reject) => {
-        accept( writer.respondWithCode(501) )
+exports.removeFavorito = (id, userId) => {
+    return new Promise<ResponsePayload>((accept, reject) => {
+        db.sequelize.transaction( (tx) => {
+            return new Promise<ResponsePayload>((accept, reject) => {
+                FavoritoSrvc.removeFavorito(id, userId, tx).then( () => {
+                    accept( writer.respondWithCode(200, { message: 'Contato removido dos seus favoritos' }) )
+                }).catch( (err) => {
+                    reject(err)
+                })
+            })
+        }).then( (response: ResponsePayload) => {
+            accept(response)
+        }).catch( (err) => {
+            reject( writer.tratarErro(err) )
+        })
     });
 }
 

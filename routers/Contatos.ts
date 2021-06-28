@@ -5,7 +5,7 @@ var Contatos = require('../controllers/ContatosController');
 var AuthSrvc = require('../services/AuthService');
 
 module.exports.createContato = (req, res, next, body) => {
-    AuthSrvc.verifyToken(req, res, (userId) => {
+    AuthSrvc.verifyToken(req, res, [], (userId) => {
         Contatos.createContato(body, userId).then( (response) => {
             writer.writeJson(res, response);
         }).catch( (response) => {

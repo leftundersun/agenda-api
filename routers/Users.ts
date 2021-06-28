@@ -5,7 +5,7 @@ var Users = require('../controllers/UsersController');
 var AuthSrvc = require('../services/AuthService');
 
 module.exports.createUser = (req, res, next) => {
-    AuthSrvc.verifyToken(req, res, (userId) => {
+    AuthSrvc.verifyToken(req, res, ['admin'], (userId) => {
         Users.createUser(req.body, req.files, userId).then( (response) => {
             writer.writeJson(res, response);
         }).catch( (response) => {
@@ -39,7 +39,7 @@ module.exports.findUserById = (req, res, next, id) => {
 };
 
 module.exports.getUser = (req, res, next) => {
-    AuthSrvc.verifyToken(req, res, (userId) => {
+    AuthSrvc.verifyToken(req, res, [], (userId) => {
         Users.getUser(userId).then( (response) => {
             writer.writeJson(res, response);
         }).catch( (response) => {

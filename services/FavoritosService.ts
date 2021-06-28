@@ -58,9 +58,49 @@ exports.listFavoritos = () => {
     })
 }
 
-exports.removeFavorito = (id) => {
+exports.removeFavorito = (id, userId, tx) => {
     return new Promise<void>((accept, reject) => {
-        accept()
+        var options: any = {
+            where: {
+                id: id
+            },
+            transaction: tx
+        }
+        Pessoa.findOne(options).then( (pessoa) => {
+            if (pessoa != null && pessoa != undefined) {
+                options = {
+                    where: {
+                        id: userId
+                    },
+                    include: {
+                        model: Pessoa,
+                        required: false,
+                        as: 'favoritos',
+                        where: {
+                            id: pessoa.id
+                        }
+                    },
+                    transaction: tx
+                }
+                User.findOne(options).then( (user) => {
+                    if (user.favoritos.length > 0) {
+                        user.removeFavoritos(pessoa).then( () => {
+                            accept()
+                        }).catch( (err) => {
+                            reject(err)
+                        })
+                    } else {
+                        reject( writer.respondWithCode(409, { message: 'O contato não consta entre seus favoritos' }) )
+                    }
+                }).catch( (err) => {
+                    reject(err)
+                })
+            } else {
+                reject( writer.respondWithCode(404, { message: 'Pessoa não encontrada' }) )
+            }
+        }).catch( (err) => {
+
+        })
     });
 }
 

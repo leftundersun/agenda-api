@@ -206,6 +206,12 @@ paths:
         explode: true
         schema:
           type: integer
+      - name: search
+        in: query
+        required: false
+        style: form
+        schema:
+          type: string
       responses:
         "200":
           description: Resultado da busca
@@ -391,6 +397,12 @@ paths:
         explode: true
         schema:
           type: integer
+      - name: search
+        in: query
+        required: false
+        style: form
+        schema:
+          type: string
       responses:
         "200":
           description: Resultado da busca
@@ -576,6 +588,12 @@ paths:
         explode: true
         schema:
           type: integer
+      - name: search
+        in: query
+        required: false
+        style: form
+        schema:
+          type: string
       responses:
         "200":
           description: Resultado da busca
