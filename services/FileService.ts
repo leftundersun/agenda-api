@@ -84,8 +84,10 @@ module.exports.saveFoto = (file: any, ft: FileServiceTransaction, tx=null) => {
 module.exports.deleteFoto = (filename: String, ft: FileServiceTransaction) => {
 	return new Promise<void>( (accept, reject) => {
 		try {
-			var fh = new FileHolder(filename)
-			ft.filesToDelete.push(fh)
+			if (filename.length > 0) {
+				var fh = new FileHolder(filename)
+				ft.filesToDelete.push(fh)
+			}
 			accept()
 		} catch (err) {
 			reject(err)

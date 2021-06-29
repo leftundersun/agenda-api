@@ -100,8 +100,7 @@ exports.getUser = (id) => {
                                 {
                                     model: ContatoTipo,
                                     as: 'contatoTipo'
-                                },
-                                {
+                                },{
                                     model: ContatoCategoria,
                                     as: 'contatoCategoria'
                                 }

@@ -14,9 +14,30 @@ exports.createContato = (data, userId, tx) => {
     });
 }
 
-exports.deleteContato = (id) => {
+exports.deleteContato = (id, tx) => {
     return new Promise<void>((accept, reject) => {
+        //todo
         accept()
+    });
+}
+
+exports.deleteContatosByPessoaId = (pessoaId, tx) => {
+    return new Promise<void>((accept, reject) => {
+        Contato.destroy({ where: { pessoa_id: pessoaId }, transaction: tx }).then( () => {
+            accept()
+        }).catch( (err) => {
+            reject(err)
+        })
+    });
+}
+
+exports.deleteContatosByUserId = (userId, tx) => {
+    return new Promise<void>((accept, reject) => {
+        Contato.destroy({ where: { user_id: userId }, transaction: tx }).then( () => {
+            accept()
+        }).catch( (err) => {
+            reject(err)
+        })
     });
 }
 

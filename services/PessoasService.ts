@@ -7,6 +7,9 @@ var Endereco = db.endereco
 var Estado = db.estado
 var Cidade = db.cidade
 var Pais = db.pais
+var Contato = db.contato
+var ContatoCategoria = db.contatoCategoria
+var ContatoTipo = db.contatoTipo
 var FileSrvc = require('./FileService');
 var ResourceSrvc = require('./ResourcesService');
 var EnderecosSrvc = require('./EnderecosService');
@@ -75,10 +78,20 @@ exports.deletePessoa = (id, userId, tx, ft) => {
                     if (user != null && user != undefined && (userId != user.id)) {
                         reject( writer.respondWithCode(401, { message: 'Você não tem permissão para fazer isso' }) )
                     } else {
-                        pessoa.destroy().then( () => {
-                            accept()
-                        }).catch( (err) => {
-                            reject(err)
+                        FileSrvc.deleteFoto(pessoa.foto, ft).then( () => {
+                            ContatosSrvc.deleteContatosByPessoaId(pessoa.id, tx).then( () => {
+                                EnderecosSrvc.deleteEnderecoByPessoaId(pessoa.id, tx).then( () => {
+                                    pessoa.destroy({ transaction: tx }).then( () => {
+                                        accept()
+                                    }).catch( (err) => {
+                                        reject(err)
+                                    })
+                                }).catch( (err) => {
+                                    reject(err)
+                                })
+                            }).catch( (err) => {
+                                reject(err)
+                            })
                         })
                     }
                 }).catch( (err) => {
@@ -94,40 +107,42 @@ exports.deletePessoa = (id, userId, tx, ft) => {
 exports.filterPessoa = (page, search='', userId) => {
     return new Promise<object>( (accept, reject) => {
         var options: any = {
-            where: {
-                [Op.or]: [
-                    {
-                        nome: {
-                            [Op.like]: `%${search.trim()}%`
-                        }
-                    },
-                    {
-                        cpf: {
-                            [Op.like]: `%${search.trim()}%`
+            where: db.Sequelize.literal(`
+                "pessoa"."nome" LIKE '%${search.trim()}%' OR
+                "pessoa"."cpf" LIKE '%${search.trim()}%' OR
+                "contatos"."valor" LIKE '%${search.trim()}%'`),
+            include: [
+                {
+                    model: Endereco,
+                    include: {
+                        model: Cidade,
+                        include: {
+                            model: Estado,
+                            include: {
+                                model: Pais,
+                                as: 'pais'
+                            }
                         }
                     }
-                ]
-            }
+                },{
+                    model: Contato,
+                    required: false,
+                    include: [
+                        {
+                            model: ContatoTipo,
+                            as: 'contatoTipo'
+                        },{
+                            model: ContatoCategoria,
+                            as: 'contatoCategoria'
+                        }
+                    ]
+                }
+            ]
         }
         Pessoa.count(options).then( (count) => {
             options.limit = 20
             options.offset = (page - 1) * 20
-            options.include = {
-                model: Endereco,
-                include: {
-                    model: Cidade,
-                    include: {
-                        model: Estado,
-                        include: {
-                            model: Pais,
-                            as: 'pais'
-                        }
-                    }
-                }
-            }
             Pessoa.findAll(options).then( (results) => {
-                console.log('################ ResourceSrvc')
-                console.log(ResourceSrvc)
                 ResourceSrvc.getFotos(results).then( (pessoas) => {
                     results = pessoas
                     accept({ totalCount: count, pessoas: results })

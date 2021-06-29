@@ -19,6 +19,16 @@ exports.deleteEndereco = (id) => {
     });
 }
 
+exports.deleteEnderecoByPessoaId = (pessoaId, tx) => {
+    return new Promise<void>((accept, reject) => {
+        Endereco.destroy({ where: { pessoa_id: pessoaId }, transaction: tx }).then( () => {
+            accept()
+        }).catch( (err) => {
+            reject(err)
+        })
+    });
+}
+
 exports.findEnderecoById = (id) => {
     return new Promise<void>((accept, reject) => {
         accept()
