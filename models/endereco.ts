@@ -15,6 +15,10 @@ module.exports = function (sequelize: any, Sequelize: any) {
         complemento: {
             type: Sequelize.STRING(50),
             allowNull: false
+        },
+        cep: {
+            type: Sequelize.STRING(8),
+            allowNull: false
         }
     }, {
         underscored: true

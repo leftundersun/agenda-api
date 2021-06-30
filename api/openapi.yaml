@@ -748,10 +748,14 @@ paths:
         in: path
         description: Id do estado do qual listar as cidades
         required: true
-        style: simple
-        explode: false
         schema:
           type: integer
+      - name: search
+        in: query
+        description: String para buscar cidades pelo nome
+        required: true
+        schema:
+          type: string
       responses:
         "200":
           description: Lista de cidades

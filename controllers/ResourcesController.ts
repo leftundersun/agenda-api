@@ -1,5 +1,6 @@
 'use strict';
-
+var writer = require('../utils/writer.ts');
+var ResourceSrvc = require('../services/ResourcesService');
 
 /**
  * Filtrar pessoas a serem selecionadas em forms
@@ -8,21 +9,8 @@
  * returns PessoaArray
  **/
 exports.filterPessoas = (withoutUser) => {
-    return new Promise<void>((accept, reject) => {
-        accept()
-    });
-}
-
-
-/**
- * Listar cidades de um estado
- *
- * estadoId Integer Id do estado do qual listar as cidades
- * returns CidadeArray
- **/
-exports.listCidades = (estadoId) => {
-    return new Promise<void>((accept, reject) => {
-        accept()
+    return new Promise<ResponsePayload>((accept, reject) => {
+        accept( writer.respondWithCode(501) )
     });
 }
 
@@ -33,8 +21,12 @@ exports.listCidades = (estadoId) => {
  * returns ContatoCategoriaArray
  **/
 exports.listContatoCategorias = () => {
-    return new Promise<void>((accept, reject) => {
-        accept()
+    return new Promise<ResponsePayload>((accept, reject) => {
+        ResourceSrvc.listContatoCategorias().then( (categorias) => {
+            accept( writer.respondWithCode(200, { categorias: categorias }) )
+        }).catch( (err) => {
+            reject( writer.tratarErro(err) )
+        })
     });
 }
 
@@ -45,8 +37,29 @@ exports.listContatoCategorias = () => {
  * returns ContatoTipoArray
  **/
 exports.listContatoTipos = () => {
-    return new Promise<void>((accept, reject) => {
-        accept()
+    return new Promise<ResponsePayload>((accept, reject) => {
+        ResourceSrvc.listContatoTipos().then( (tipos) => {
+            accept( writer.respondWithCode(200, { tipos: tipos }) )
+        }).catch( (err) => {
+            reject( writer.tratarErro(err) )
+        })
+    });
+}
+
+
+/**
+ * Listar cidades de um estado
+ *
+ * estadoId Integer Id do estado do qual listar as cidades
+ * returns CidadeArray
+ **/
+exports.listCidades = (estadoId, search) => {
+    return new Promise<ResponsePayload>((accept, reject) => {
+        ResourceSrvc.listCidades(estadoId, search).then( (cidades) => {
+            accept( writer.respondWithCode(200, { cidades: cidades }) )
+        }).catch( (err) => {
+            reject( writer.tratarErro(err) )
+        })
     });
 }
 
@@ -58,8 +71,12 @@ exports.listContatoTipos = () => {
  * returns EstadoArray
  **/
 exports.listEstados = (paisId) => {
-    return new Promise<void>((accept, reject) => {
-        accept()
+    return new Promise<ResponsePayload>((accept, reject) => {
+        ResourceSrvc.listEstados(paisId).then( (estados) => {
+            accept( writer.respondWithCode(200, { estados: estados }) )
+        }).catch( (err) => {
+            reject( writer.tratarErro(err) )
+        })
     });
 }
 
@@ -70,8 +87,12 @@ exports.listEstados = (paisId) => {
  * returns PaisArray
  **/
 exports.listPaises = () => {
-    return new Promise<void>((accept, reject) => {
-        accept()
+    return new Promise<ResponsePayload>((accept, reject) => {
+        ResourceSrvc.listPaises().then( (paises) => {
+            accept( writer.respondWithCode(200, { paises: paises }) )
+        }).catch( (err) => {
+            reject( writer.tratarErro(err) )
+        })
     });
 }
 

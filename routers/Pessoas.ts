@@ -1,7 +1,7 @@
 'use strict';
 var writer = require('../utils/writer.ts');
-var PessoasCtrl = require('../controllers/PessoasController');
 var AuthSrvc = require('../services/AuthService');
+var PessoasCtrl = require('../controllers/PessoasController');
 
 module.exports.createPessoa = (req, res, next) => {
     AuthSrvc.verifyToken(req, res, [], (userId) => {

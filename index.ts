@@ -58,6 +58,7 @@ TransactionSrvc.transaction( (tx, ft) => {
                         numero: "570",
                         bairro: "Centro",
                         logradouro: "R. Saldanha Marinho",
+                        cep: "95700082",
                         cidade_id: 4649
                     },
                     contatos: [

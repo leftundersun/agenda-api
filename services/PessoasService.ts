@@ -19,6 +19,8 @@ var writer = require('../utils/writer.ts');
 
 exports.createPessoa = (data, userId, tx, ft) => {
     return new Promise<void>( (accept, reject) => {
+        console.log('############## data')
+        console.log(data)
         FileSrvc.saveFoto( data.foto, ft, tx ).then( (filename) => {
             data.foto = filename ?? ''
             Pessoa.create( data, { transaction: tx } ).then( (pessoa) => {
@@ -76,7 +78,7 @@ exports.deletePessoa = (id, userId, tx, ft) => {
                 }
                 User.findOne(options).then( (user) => {
                     if (user != null && user != undefined && (userId != user.id)) {
-                        reject( writer.respondWithCode(401, { message: 'Você não tem permissão para fazer isso' }) )
+                        reject( writer.respondWithCode(403, { message: 'Você não tem permissão para fazer isso' }) )
                     } else {
                         FileSrvc.deleteFoto(pessoa.foto, ft).then( () => {
                             ContatosSrvc.deleteContatosByPessoaId(pessoa.id, tx).then( () => {
@@ -107,11 +109,25 @@ exports.deletePessoa = (id, userId, tx, ft) => {
 exports.filterPessoa = (page, search='', userId) => {
     return new Promise<object>( (accept, reject) => {
         var options: any = {
-            where: db.Sequelize.literal(`
-                "pessoa"."nome" LIKE '%${search.trim()}%' OR
-                "pessoa"."cpf" LIKE '%${search.trim()}%' OR
-                "contatos"."valor" LIKE '%${search.trim()}%'`),
-            include: [
+            where: {
+                [Op.or]: [
+                    {
+                        nome: {
+                            [Op.like]: `%${search.trim()}%`
+                        }
+                    }, {
+                        cpf: {
+                            [Op.like]: `%${search.trim()}%`
+                        }
+                    }
+                ]
+            },
+        }
+        Pessoa.count(options).then( (count) => {
+            options.limit = 20
+            options.offset = (page - 1) * 20
+            options.order = ['id']
+            options.include = [
                 {
                     model: Endereco,
                     include: {
@@ -127,6 +143,19 @@ exports.filterPessoa = (page, search='', userId) => {
                 },{
                     model: Contato,
                     required: false,
+                    where: {
+                        [Op.or]: [
+                            { 
+                                user_id: {
+                                    [Op.eq]: userId
+                                }
+                            },{ 
+                                publico: {
+                                    [Op.eq]: true
+                                }
+                            }
+                        ]
+                    },
                     include: [
                         {
                             model: ContatoTipo,
@@ -138,10 +167,6 @@ exports.filterPessoa = (page, search='', userId) => {
                     ]
                 }
             ]
-        }
-        Pessoa.count(options).then( (count) => {
-            options.limit = 20
-            options.offset = (page - 1) * 20
             Pessoa.findAll(options).then( (results) => {
                 ResourceSrvc.getFotos(results).then( (pessoas) => {
                     results = pessoas

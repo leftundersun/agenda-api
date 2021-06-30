@@ -62,7 +62,7 @@ exports.verifyToken = (req, res, roles, next) => {
                             }
                         })
                         if (!authorized) {
-                            writer.writeJson( res, writer.respondWithCode(401, { message: 'Você não tem permissão para fazer isso' }) )
+                            writer.writeJson( res, writer.respondWithCode(403, { message: 'Você não tem permissão para fazer isso' }) )
                         } else {
                             next(user.id)
                         }
