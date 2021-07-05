@@ -15,7 +15,9 @@ var ResourceSrvc = require('./ResourcesService');
 var EnderecosSrvc = require('./EnderecosService');
 var ContatosSrvc = require('./ContatosService');
 var foreach = require('../utils/foreach').foreach;
+var validateCpf = require('../utils/validate-cpf').validateCpf;
 var writer = require('../utils/writer.ts');
+var moment = require('moment')
 
 exports.createPessoa = (data, userId, tx, ft) => {
     return new Promise<void>( (accept, reject) => {
@@ -23,17 +25,21 @@ exports.createPessoa = (data, userId, tx, ft) => {
         console.log(data)
         FileSrvc.saveFoto( data.foto, ft, tx ).then( (filename) => {
             data.foto = filename ?? ''
-            Pessoa.create( data, { transaction: tx } ).then( (pessoa) => {
-                data.endereco.pessoa_id = pessoa.id
-                EnderecosSrvc.createEndereco(data.endereco, userId, tx).then( () => {
-                    createContatos(data.contatos, pessoa.id, userId, tx).then( () => {
-                        accept()
+            validatePessoa(data).then( (data) => {
+                Pessoa.create( data, { transaction: tx } ).then( (pessoa) => {
+                    data.endereco.pessoa_id = pessoa.id
+                    EnderecosSrvc.createEndereco(data.endereco, userId, tx).then( () => {
+                        createContatos(data.contatos, pessoa.id, userId, tx).then( () => {
+                            accept()
+                        }).catch( (err) => {
+                            reject(err)
+                        })
                     }).catch( (err) => {
                         reject(err)
-                    })
+                    }) 
                 }).catch( (err) => {
                     reject(err)
-                }) 
+                })
             }).catch( (err) => {
                 reject(err)
             })
@@ -183,9 +189,71 @@ exports.filterPessoa = (page, search='', userId) => {
     });
 }
 
-exports.findPessoaById = (id) => {
+exports.findPessoaById = (id, userId) => {
     return new Promise<void>((accept, reject) => {
-        accept()
+        var options = {
+            where: {
+                id: id
+            },
+            include: [
+                {
+                    model: Endereco,
+                    include: {
+                        model: Cidade,
+                        include: {
+                            model: Estado,
+                            include: {
+                                model: Pais,
+                                as: 'pais'
+                            }
+                        }
+                    }
+                },{
+                    model: Contato,
+                    required: false,
+                    where: {
+                        [Op.or]: [
+                            { 
+                                user_id: {
+                                    [Op.eq]: userId
+                                }
+                            },{ 
+                                publico: {
+                                    [Op.eq]: true
+                                }
+                            }
+                        ]
+                    },
+                    include: [
+                        {
+                            model: ContatoTipo,
+                            as: 'contatoTipo'
+                        },{
+                            model: ContatoCategoria,
+                            as: 'contatoCategoria'
+                        }
+                    ]
+                }
+            ]
+        }
+        Pessoa.findOne(options).then( (pessoa) => {
+            if (pessoa != null && pessoa != undefined) {
+                if (pessoa.foto != '') {
+                    FileSrvc.getFoto(pessoa.foto).then( (data) => {
+                        pessoa.foto = data
+                        accept(pessoa)
+                    }).catch( (err) => {
+                        reject(err)
+                    })
+                } else {
+                    accept(pessoa)
+                }
+            } else {
+                reject( writer.respondWithCode(404, { message: 'Pessoa não encontrada' }) )
+            }
+        }).catch( (err) => {
+            reject(err)
+        })
     });
 }
 
@@ -193,4 +261,35 @@ exports.updatePessoa = (id) => {
     return new Promise<void>((accept, reject) => {
         accept()
     });
+}
+
+
+var validatePessoa = (data) => {
+    return new Promise<any>((accept, reject) => {
+        if ( data.nome != null && data.nome != undefined && data.nome.trim() != '' ) {
+            validateCpf(data.cpf).then( (cpf) => {
+                data.cpf = cpf
+                validateDataNascimento(data).then( (data) => {
+                    accept(data)
+                }).catch( (err) => {
+                    reject(err)
+                })
+            }).catch( (err) => {
+                reject(err)
+            })
+        } else {
+            reject( writer.respondWithCode(400, { message: 'Dados da pessoa incompletos' }) )
+        }
+    })
+}
+
+var validateDataNascimento = (data) => {
+    return new Promise<any>((accept, reject) => {
+        data.data_nascimento = moment(data.data_nascimento, 'DD/MM/YYYY', true)
+        if (data.data_nascimento.isValid()) {
+            accept(data)
+        } else {
+            reject( writer.respondWithCode(400, { message: 'Dados da pessoa inválidos' }) )
+        }
+    })
 }

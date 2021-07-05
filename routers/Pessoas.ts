@@ -36,11 +36,13 @@ module.exports.filterPessoa = (req, res, next, page, search) => {
 };
 
 module.exports.findPessoaById = (req, res, next, id) => {
-    PessoasCtrl.findPessoaById(id).then( (response) => {
-        writer.writeJson(res, response);
-    }).catch( (response) => {
-        writer.writeJson(res, response);
-    });
+    AuthSrvc.verifyToken(req, res, [], (userId) => {
+        PessoasCtrl.findPessoaById(id, userId).then( (response) => {
+            writer.writeJson(res, response);
+        }).catch( (response) => {
+            writer.writeJson(res, response);
+        });
+    })
 };
 
 module.exports.updatePessoa = (req, res, next, id) => {

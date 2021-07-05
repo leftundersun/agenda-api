@@ -7,6 +7,15 @@ var foreach = require('../utils/foreach').foreach;
 var uuid = require('uuid').v4
 var dir = process.env.USER_FOTOS_DIRECTORY
 
+interface File {
+	fieldname: String,
+    originalname: String,
+    encoding: String,
+    mimetype: String,
+    buffer: Buffer,
+    size: number
+}
+
 class FileHolder {
 	filename: String;
 	buffer?: Buffer;
@@ -27,7 +36,7 @@ class FileServiceTransaction {
 	}
 }
 
-var getFilename = (file: any, tx=null) => {
+var getFilename = (file: File, tx=null) => {
 	return new Promise<string>( (accept, reject) => {
 		var makeFilename = () => {
 			try {
@@ -58,7 +67,7 @@ var getFilename = (file: any, tx=null) => {
 }
 
 module.exports.getFoto = (filename) => {
-	return new Promise<any>( (accept, reject) => {
+	return new Promise<Buffer>( (accept, reject) => {
 		fs.readFile(getPath(filename), (err, data) => {
 			if (err != null && err != undefined) {
 				reject(err)
@@ -69,7 +78,7 @@ module.exports.getFoto = (filename) => {
 	})
 }
 
-module.exports.saveFoto = (file: any, ft: FileServiceTransaction, tx=null) => {
+module.exports.saveFoto = (file: File, ft: FileServiceTransaction, tx=null) => {
 	return new Promise<string>( (accept, reject) => {
 		getFilename(file, tx).then( (filename) => {
 			var fh = new FileHolder(filename, file.buffer)
@@ -96,11 +105,11 @@ module.exports.deleteFoto = (filename: String, ft: FileServiceTransaction) => {
 }
 
 module.exports.transaction = (exec: Function) => {
-	return new Promise<any>( (accept, reject) => {
+	return new Promise<ResponsePayload>( (accept, reject) => {
 		var filesToSave: Array<FileHolder> = []
 		var filesToDelete: Array<FileHolder> = []
 		var fileTransaction = new FileServiceTransaction(filesToSave, filesToDelete)
-		exec(fileTransaction).then( (response) => {
+		exec(fileTransaction).then( (response: ResponsePayload) => {
 			commit(fileTransaction).then( () => {
 				accept(response)
 			}).catch( (err) => {

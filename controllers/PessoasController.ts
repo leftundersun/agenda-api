@@ -78,9 +78,13 @@ exports.filterPessoa = (page, search, userId) => {
  * id Integer Id da pessoa a ser encontrada
  * returns PessoaJson
  **/
-exports.findPessoaById = (id) => {
+exports.findPessoaById = (id, userId) => {
     return new Promise<ResponsePayload>((accept, reject) => {
-        accept( writer.respondWithCode(501) )
+        PessoaSrvc.findPessoaById(id, userId).then( (pessoa) => {
+            accept( writer.respondWithCode(200, { pessoa: pessoa }) )
+        }).catch( (err) => {
+            reject( writer.tratarErro(err) )
+        })
     });
 }
 
