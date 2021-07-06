@@ -21,10 +21,34 @@ exports.createContato = (data, userId, tx) => {
     });
 }
 
-exports.deleteContato = (id, tx) => {
+exports.deleteContato = (id, userId) => {
     return new Promise<void>((accept, reject) => {
-        //todo
-        accept()
+        var options = {
+            where: {
+                id: id,
+                [Op.or]: [
+                    { user_id: userId },
+                    { publico: true }
+                ]
+            }
+        }
+        Contato.findOne(options).then( (contato) => {
+            if (contato != null && contato != undefined) {
+                if (contato.user_id == userId) {
+                    contato.destroy().then( () => {
+                        accept()
+                    }).catch( (err) => {
+                        reject(err)
+                    })
+                } else {
+                    reject( writer.respondWithCode(403, { message: 'Você não tem permissão para fazer isso' }) )
+                }
+            } else {
+                reject( writer.respondWithCode(404, { message: 'Contato não encontrado' }) )
+            }
+        }).catch( (err) => {
+            reject(err)
+        })
     });
 }
 
@@ -60,15 +84,42 @@ exports.findContatoById = (id) => {
     });
 }
 
-exports.updateContato = (body,id) => {
+exports.updateContato = (data, id, userId, tx) => {
     return new Promise<void>((accept, reject) => {
-        accept()
+        var options = {
+            where: {
+                id: id
+            },
+            transaction: tx
+        }
+        Contato.findOne(options).then( (contato) => {
+            if (contato != null && contato != undefined) {
+                if (contato.user_id != userId) {
+                    reject( writer.respondWithCode(403, { message: 'Você não tem permissão para fazer isso' }) )
+                } else {
+                    validateContato(data, tx).then( (data) => {
+                        delete data.id
+                        Contato.update(data, { where: { id: id }, transaction: tx }).then( () => {
+                            accept()
+                        }).catch( (err) => {
+                            reject(err)
+                        })
+                    }).catch( (err) => {
+                        reject(err)
+                    })
+                }
+            } else {
+                reject( writer.respondWithCode(404, { message: 'Contato não encontrado' }) )
+            }
+        }).catch( (err) => {
+            reject(err)
+        })
     });
 }
 
 var validateContato = (data, tx) => {
     return new Promise<any>((accept, reject) => {
-        if ( data.value != null && data.value != undefined && data.value.trim() != '' ) {
+        if ( data.valor != null && data.valor != undefined && data.valor.trim() != '' ) {
             if (data.contato_tipo_id == 0) {
                 data.contato_tipo_id = data.contatoTipo.id
             }

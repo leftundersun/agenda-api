@@ -45,10 +45,18 @@ module.exports.findPessoaById = (req, res, next, id) => {
     })
 };
 
-module.exports.updatePessoa = (req, res, next, id) => {
-    PessoasCtrl.updatePessoa(id).then( (response) => {
-        writer.writeJson(res, response);
-    }).catch( (response) => {
-        writer.writeJson(res, response);
-    });
+module.exports.updatePessoa = (req, res, next, body, id) => {
+    AuthSrvc.verifyToken(req, res, [], (userId) => {
+        console.log('################## id')
+        console.log(id)
+        console.log('################## req.body')
+        console.log(req.body)
+        console.log('################## req.files')
+        console.log(req.files)
+        PessoasCtrl.updatePessoa(req.body, req.files, id, userId).then( (response) => {
+            writer.writeJson(res, response);
+        }).catch( (response) => {
+            writer.writeJson(res, response);
+        });
+    })
 };

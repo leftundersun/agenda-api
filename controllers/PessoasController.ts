@@ -95,9 +95,23 @@ exports.findPessoaById = (id, userId) => {
  * id Integer Id da pessoa a ser atualizada
  * returns BasicResponse
  **/
-exports.updatePessoa = (id) => {
+exports.updatePessoa = (body, files, id, userId) => {
     return new Promise<ResponsePayload>((accept, reject) => {
-        accept( writer.respondWithCode(501) )
+        TransactionSrvc.transaction( (tx, ft) => {
+            return new Promise<ResponsePayload>((accept, reject) => {
+                var data = JSON.parse(body.pessoa)
+                data.foto = files[0] ?? null
+                PessoaSrvc.updatePessoa(data, id, userId, tx, ft).then( () => {
+                    accept( writer.respondWithCode( 201, { message: 'Pessoa atualizada com sucesso' }) )
+                }).catch( (err) => {
+                    reject(err)
+                })
+            })
+        }).then( (response) => {
+            accept( response )
+        }).catch( (err) => {
+            reject( writer.tratarErro(err) )
+        })
     });
 }
 

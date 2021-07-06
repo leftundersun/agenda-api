@@ -80,13 +80,17 @@ module.exports.getFoto = (filename) => {
 
 module.exports.saveFoto = (file: File, ft: FileServiceTransaction, tx=null) => {
 	return new Promise<string>( (accept, reject) => {
-		getFilename(file, tx).then( (filename) => {
-			var fh = new FileHolder(filename, file.buffer)
-			ft.filesToSave.push(fh)
-			accept(filename)
-		}).catch( (err) => {
-			reject(err)
-		})
+		if (file != null && file != undefined) {
+			getFilename(file, tx).then( (filename) => {
+				var fh = new FileHolder(filename, file.buffer)
+				ft.filesToSave.push(fh)
+				accept(filename)
+			}).catch( (err) => {
+				reject(err)
+			})
+		} else {
+			accept('')
+		}
 	})
 }
 
@@ -116,6 +120,8 @@ module.exports.transaction = (exec: Function) => {
 				reject( writer.tratarErro(err) )
 			})
 		}).catch( (err) => {
+            console.log('############### err')
+            console.log(err)
 			reject( writer.tratarErro(err) )
 		})
 	})

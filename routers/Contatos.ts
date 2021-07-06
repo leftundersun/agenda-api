@@ -15,19 +15,23 @@ module.exports.createContato = (req, res, next, body) => {
 };
 
 module.exports.deleteContato = (req, res, next, id) => {
-    Contatos.deleteContato(id).then( (response) => {
-        writer.writeJson(res, response);
-    }).catch( (response) => {
-        writer.writeJson(res, response);
-    });
+    AuthSrvc.verifyToken(req, res, [], (userId) => {
+        Contatos.deleteContato(id, userId).then( (response) => {
+            writer.writeJson(res, response);
+        }).catch( (response) => {
+            writer.writeJson(res, response);
+        });
+    })
 };
 
-module.exports.filterContato = (req, res, next, page) => {
-    Contatos.filterContato(page).then( (response) => {
-        writer.writeJson(res, response);
-    }).catch( (response) => {
-        writer.writeJson(res, response);
-    });
+module.exports.filterContato = (req, res, next, page, search) => {
+    AuthSrvc.verifyToken(req, res, [], (userId) => {
+        Contatos.filterContato(page, search, userId).then( (response) => {
+            writer.writeJson(res, response);
+        }).catch( (response) => {
+            writer.writeJson(res, response);
+        });
+    })
 };
 
 module.exports.findContatoById = (req, res, next, id) => {

@@ -20,6 +20,8 @@ exports.foreach = (items, method, callback=null) => {
 				} else {
 					next()
 				}
+			}).catch( (err) => {
+				reject(err)
 			})
 		}
 		if (items.length > 0) {

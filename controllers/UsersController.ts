@@ -1,5 +1,4 @@
 'use strict';
-
 var writer = require('../utils/writer.ts');
 var UserSrvc = require('../services/UsersService');
 
