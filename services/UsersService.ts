@@ -112,7 +112,7 @@ exports.getUser = (id) => {
         }
         User.findOne(options).then( (user) => {
             if (user != null && user != undefined) {
-                ResourceSrvc.getFotos(user.favoritos).then( (pessoas) => {
+                ResourceSrvc.getPessoasFotos(user.favoritos).then( (pessoas) => {
                     user.favoritos = pessoas
                     accept( formatUser(user) )
                 }).catch( (err) => {

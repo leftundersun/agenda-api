@@ -4,9 +4,13 @@ var writer = require('../utils/writer.ts');
 var AuthSrvc = require('../services/AuthService');
 var Resources = require('../controllers/ResourcesController');
 
-module.exports.filterPessoas = (req, res, next, withoutUser) => {
+module.exports.filterPessoas = (req, res, next, search, withoutUser) => {
+    console.log('############ withoutUser')
+    console.log(withoutUser)
+    console.log('############ search')
+    console.log(search)
     AuthSrvc.verifyToken(req, res, [], (userId) => {
-        Resources.filterPessoas(withoutUser).then( (response) => {
+        Resources.filterPessoas(withoutUser, search).then( (response) => {
             writer.writeJson(res, response);
         }).catch( (response) => {
             writer.writeJson(res, response);

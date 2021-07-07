@@ -42,7 +42,7 @@ db.endereco.belongsTo(db.cidade, { foreignKey: 'cidade_id' })
 db.pessoa.hasOne(db.endereco, { foreignKey: 'pessoa_id' })
 db.endereco.belongsTo(db.pessoa, { foreignKey: 'pessoa_id' })
 
-db.pessoa.hasOne(db.user, { foreignKey: 'pessoa_id' })
+db.pessoa.hasOne(db.user, { foreignKey: 'pessoa_id', as: 'user' } )
 db.user.belongsTo(db.pessoa, { foreignKey: 'pessoa_id', as: 'pessoa' })
 
 db.pessoa.hasMany(db.contato, { foreignKey: 'pessoa_id' })
@@ -61,7 +61,7 @@ db.user.belongsToMany(db.role, { through: 'user_roles' })
 db.role.belongsToMany(db.user, { through: 'user_roles' })
 
 db.user.belongsToMany(db.pessoa, { through: 'user_contato_favorito', as: 'favoritos' })
-db.pessoa.belongsToMany(db.user, { through: 'user_contato_favorito' })
+db.pessoa.belongsToMany(db.user, { through: 'user_contato_favorito', as: 'benfeitores'})
 
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;

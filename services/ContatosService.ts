@@ -3,8 +3,10 @@ var db = require('../models')
 var Op = db.Sequelize.Op
 var Contato = db.contato
 var Pessoa = db.pessoa
+var User = db.user
 var ContatoCategoria = db.contatoCategoria
 var ContatoTipo = db.contatoTipo
+var ResourceSrvc = require('./ResourcesService')
 var writer = require('../utils/writer.ts');
 
 exports.createContato = (data, userId, tx) => {
@@ -72,15 +74,133 @@ exports.deleteContatosByUserId = (userId, tx) => {
     });
 }
 
-exports.filterContato = (page) => {
-    return new Promise<void>((accept, reject) => {
-        accept()
+exports.filterContato = (page, search='', userId) => {
+    return new Promise<object>((accept, reject) => {
+        var options: any = {
+            where: {
+                [Op.and]: [
+                    {
+
+                        [Op.or]: [
+                            {
+                                valor: {
+                                    [Op.like]: `%${search}%`
+                                }
+                            },{
+                                '$pessoa.nome$': {
+                                    [Op.like]: `%${search}%`
+                                }
+                            },{
+                                '$pessoa.cpf$': {
+                                    [Op.like]: `%${search}%`
+                                }
+                            }
+                        ]
+                    },{
+                        [Op.or]: [
+                            { 
+                                user_id: {
+                                    [Op.eq]: userId
+                                }
+                            },{ 
+                                publico: {
+                                    [Op.eq]: true
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            include: [
+                {
+                    model: ContatoTipo,
+                    required: true,
+                    as: 'contatoTipo'
+                },{
+                    model: ContatoCategoria,
+                    required: true,
+                    as: 'contatoCategoria'
+                },{
+                    model: Pessoa,
+                    required: true,
+                    include: {
+                        model: User,
+                        attributes: ['id'],
+                        as: 'benfeitores',
+                        required: false,
+                        where: {
+                            id: userId
+                        }
+                    }
+                },{
+                    model: User,
+                    attributes: ['id', 'username'],
+                    include: {
+                        model: Pessoa,
+                        as: 'pessoa'
+                    }
+                }
+            ]
+        }
+        Contato.count(options).then( (count) => {
+            options.limit = 20
+            options.offset = (page - 1) * 20
+            options.order = ['id']
+            Contato.findAll(options).then( (results) => {
+                ResourceSrvc.getContatosFotos(results).then( (contatos) => {
+                    results = contatos
+                    accept({ totalCount: count, contatos: results })
+                }).catch( (err) => {
+                    reject(err)
+                })
+            }).catch( (err) => {
+                reject(err)
+            })
+        }).catch( (err) => {
+            reject(err)
+        })
     });
 }
 
-exports.findContatoById = (id) => {
+exports.findContatoById = (id, userId) => {
     return new Promise<void>((accept, reject) => {
-        accept()
+        var options: any = {
+            where: {
+                [Op.and]: [
+                    {
+                        id: id
+                    },{
+                        [Op.or]: [
+                            { 
+                                user_id: {
+                                    [Op.eq]: userId
+                                }
+                            },{ 
+                                publico: {
+                                    [Op.eq]: true
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            include: [
+                {
+                    model: ContatoTipo,
+                    as: 'contatoTipo'
+                },{
+                    model: ContatoCategoria,
+                    as: 'contatoCategoria'
+                },{
+                    model: Pessoa
+                }
+            ]
+        }
+        Contato.findOne(options).then( (contato) => {
+            accept(contato)
+        }).catch( (err) => {
+            reject(err)
+        })
     });
 }
 

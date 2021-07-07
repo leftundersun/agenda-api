@@ -147,11 +147,11 @@ exports.filterPessoa = (page, search='', userId) => {
                 [Op.or]: [
                     {
                         nome: {
-                            [Op.like]: `%${search.trim()}%`
+                            [Op.like]: `%${search}%`
                         }
                     }, {
                         cpf: {
-                            [Op.like]: `%${search.trim()}%`
+                            [Op.like]: `%${search}%`
                         }
                     }
                 ]
@@ -202,7 +202,7 @@ exports.filterPessoa = (page, search='', userId) => {
                 }
             ]
             Pessoa.findAll(options).then( (results) => {
-                ResourceSrvc.getFotos(results).then( (pessoas) => {
+                ResourceSrvc.getPessoasFotos(results).then( (pessoas) => {
                     results = pessoas
                     accept({ totalCount: count, pessoas: results })
                 }).catch( (err) => {

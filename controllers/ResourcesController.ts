@@ -8,9 +8,13 @@ var ResourceSrvc = require('../services/ResourcesService');
  * withoutUser Boolean    (optional)
  * returns PessoaArray
  **/
-exports.filterPessoas = (withoutUser) => {
+exports.filterPessoas = (withoutUser, search) => {
     return new Promise<ResponsePayload>((accept, reject) => {
-        accept( writer.respondWithCode(501) )
+        ResourceSrvc.filterPessoas(withoutUser, search).then( (pessoas) => {
+            accept( writer.respondWithCode(200, { pessoas: pessoas }) )
+        }).catch( (err) => {
+            reject( writer.tratarErro(err) )
+        })
     });
 }
 
