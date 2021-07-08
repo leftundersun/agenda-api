@@ -18,7 +18,6 @@ exports.filterPessoas = (withoutUser, search) => {
     });
 }
 
-
 /**
  * Listar categorias de contatos
  *
@@ -34,7 +33,6 @@ exports.listContatoCategorias = () => {
     });
 }
 
-
 /**
  * Listar tipos de contatos
  *
@@ -49,7 +47,6 @@ exports.listContatoTipos = () => {
         })
     });
 }
-
 
 /**
  * Listar cidades de um estado
@@ -67,7 +64,6 @@ exports.listCidades = (estadoId, search) => {
     });
 }
 
-
 /**
  * Listar estados de um país
  *
@@ -84,7 +80,6 @@ exports.listEstados = (paisId) => {
     });
 }
 
-
 /**
  * Listar paises
  *
@@ -100,3 +95,17 @@ exports.listPaises = () => {
     });
 }
 
+/**
+ * Listar roles
+ *
+ * returns RoleArray
+ **/
+exports.listRoles = () => {
+    return new Promise<ResponsePayload>((accept, reject) => {
+        ResourceSrvc.listRoles().then( (roles) => {
+            accept( writer.respondWithCode(200, { roles: roles }) )
+        }).catch( (err) => {
+            reject( writer.tratarErro(err) )
+        })
+    });
+}

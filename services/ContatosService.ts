@@ -80,7 +80,6 @@ exports.filterContato = (page, search='', userId) => {
             where: {
                 [Op.and]: [
                     {
-
                         [Op.or]: [
                             {
                                 valor: {
@@ -147,7 +146,7 @@ exports.filterContato = (page, search='', userId) => {
             options.offset = (page - 1) * 20
             options.order = ['id']
             Contato.findAll(options).then( (results) => {
-                ResourceSrvc.getContatosFotos(results).then( (contatos) => {
+                ResourceSrvc.getPessoaOwnersFotos(results).then( (contatos) => {
                     results = contatos
                     accept({ totalCount: count, contatos: results })
                 }).catch( (err) => {

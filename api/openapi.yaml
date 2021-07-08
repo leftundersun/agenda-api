@@ -775,6 +775,28 @@ paths:
       security:
       - jwt: []
       x-swagger-router-controller: Resources
+  /resources/roles:
+    get:
+      tags:
+      - resources
+      summary: Listar roles
+      operationId: listRoles
+      responses:
+        "200":
+          description: Lista de roles
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoleArray'
+        "401":
+          description: Falha de autenticação
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicResponse'
+      security:
+      - jwt: []
+      x-swagger-router-controller: Resources
   /favoritos/list:
     get:
       tags:

@@ -95,7 +95,15 @@ var filterPessoas = (withoutUser=false, search) => {
             }
         }
         Pessoa.findAll(options).then( (pessoas) => {
-            accept(pessoas)
+            if (withoutUser) {
+                getPessoasFotos(pessoas).then( (pessoas) => {
+                    accept(pessoas)
+                }).catch( (err) => {
+                    reject(err)
+                })
+            } else {
+                accept(pessoas)
+            }
         }).catch( (err) => {
             reject(err)
         })
@@ -160,6 +168,16 @@ var listPaises = () => {
     });
 }
 
+var listRoles = () => {
+    return new Promise<Array<object>>( (accept, reject) => {
+        Role.findAll().then( (roles) => {
+            accept(roles)
+        }).catch( (err) => {
+            reject(err)
+        })
+    });
+}
+
 var getFoto = (pessoa) => {
     return new Promise<void>( (accept, reject) => {
         if (pessoa.foto.trim() != '') {
@@ -175,18 +193,18 @@ var getFoto = (pessoa) => {
     })
 }
 
-var getContatosFotos = (contatos) => {
+var getPessoaOwnersFotos = (objs: any) => {
     return new Promise<any>( (accept, reject) => {
-        foreach(contatos, (contato) => {
+        foreach(objs, (obj) => {
             return new Promise<void>( (accept, reject) => {
-                getFoto(contato.pessoa).then( () => {
+                getFoto(obj.pessoa).then( () => {
                     accept()
                 }).catch( (err) => {
                     reject(err)
                 })
             })
         }).then( () => {
-            accept(contatos)
+            accept(objs)
         }).catch( (err) => {
             reject(err)
         })
@@ -210,6 +228,7 @@ module.exports = {
     listContatoTipos: listContatoTipos,
     listEstados: listEstados,
     listPaises: listPaises,
+    listRoles: listRoles,
     getPessoasFotos: getPessoasFotos,
-    getContatosFotos: getContatosFotos
+    getPessoaOwnersFotos: getPessoaOwnersFotos
 }

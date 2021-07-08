@@ -11,15 +11,46 @@ var Pais = db.pais
 var Contato = db.contato
 var ContatoCategoria = db.contatoCategoria
 var ContatoTipo = db.contatoTipo
+var bcrypt = require('bcrypt')
 var FileSrvc = require('./FileService');
+var PessoaSrvc = require('./PessoasService');
 var ResourceSrvc = require('./ResourcesService');
 var writer = require('../utils/writer.ts');
 var foreach = require('../utils/foreach').foreach;
 
-exports.createUser = () => {
-    return new Promise<void>((accept, reject) => {
-        accept()
-    });
+exports.createUser = (data, userId, tx, ft) => {
+    return new Promise<object>( (accept, reject) => {
+        console.log('############## data')
+        console.log(data)
+        User.findOne({ where: { username: data.username }, transaction: tx }).then( (user) => {
+            if (user != null && user != undefined) {
+                reject( writer.respondWithCode(409, { message: 'Esse nome de usuário já está em uso' }) )
+            } else {
+                PessoaSrvc.createPessoa(data.pessoa, userId, tx, ft).then( (pessoa) => {
+                    data.pessoa_id = pessoa.id
+                    bcrypt.hash(data.password, 10).then( (hash) => {
+                        data.password = hash
+                        User.create(data, { transaction: tx }).then( (user) => {
+                            var rolesIds = Array.from(data.roles, (role: any) => { return role.id })
+                            user.addRoles(rolesIds, { transaction: tx }).then( () => {
+                                accept(user)
+                            }).catch( (err) => {
+                                reject(err)
+                            })
+                        }).catch( (err) => {
+                            reject(err)
+                        })
+                    }).catch( (err) => {
+                        reject(err)
+                    })
+                }).catch( (err) => {
+                    reject(err)
+                })
+            }
+        }).catch( (err) => {
+            reject(err)
+        })
+    })
 }
 
 exports.deleteUser = (id) => {
@@ -28,9 +59,62 @@ exports.deleteUser = (id) => {
     });
 }
 
-exports.filterUser = (page) => {
-    return new Promise<void>((accept, reject) => {
-        accept()
+exports.filterUser = (page, search='', userId) => {
+    return new Promise<object>((accept, reject) => {
+        var options: any = {
+            where: {
+                [Op.or]: [
+                    {
+                        username: {
+                            [Op.like]: `%${search}%`
+                        }
+                    },{
+                        '$pessoa.nome$': {
+                            [Op.like]: `%${search}%`
+                        }
+                    },{
+                        '$pessoa.cpf$': {
+                            [Op.like]: `%${search}%`
+                        }
+                    }
+                ]
+            },
+            include: {
+                model: Pessoa,
+                as: 'pessoa',
+                required: true,
+                include: {
+                    model: Endereco,
+                    include: {
+                        model: Cidade,
+                        include: {
+                            model: Estado,
+                            include: {
+                                model: Pais,
+                                as: 'pais'
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        User.count(options).then( (count) => {
+            options.limit = 20
+            options.offset = (page - 1) * 20
+            options.order = ['id']
+            User.findAll(options).then( (results) => {
+                ResourceSrvc.getPessoaOwnersFotos(results).then( (users) => {
+                    results = users
+                    accept({ totalCount: count, users: results })
+                }).catch( (err) => {
+                    reject(err)
+                })
+            }).catch( (err) => {
+                reject(err)
+            })
+        }).catch( (err) => {
+            reject(err)
+        })
     });
 }
 

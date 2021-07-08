@@ -20,32 +20,36 @@ var writer = require('../utils/writer.ts')
 var moment = require('moment')
 
 exports.createPessoa = (data, userId, tx, ft) => {
-    return new Promise<void>( (accept, reject) => {
+    return new Promise<object>( (accept, reject) => {
         console.log('############## data')
         console.log(data)
-        FileSrvc.saveFoto( data.foto, ft, tx ).then( (filename) => {
-            data.foto = filename ?? ''
-            validatePessoa(data).then( (data) => {
-                Pessoa.create( data, { transaction: tx } ).then( (pessoa) => {
-                    data.endereco.pessoa_id = pessoa.id
-                    EnderecosSrvc.createEndereco(data.endereco, userId, tx).then( () => {
-                        createContatos(data.contatos, pessoa.id, userId, tx).then( () => {
-                            accept()
+        if (data.id > 0) {
+            accept(data)
+        } else {
+            FileSrvc.saveFoto( data.foto, ft, tx ).then( (filename) => {
+                data.foto = filename ?? ''
+                validatePessoa(data).then( (data) => {
+                    Pessoa.create( data, { transaction: tx } ).then( (pessoa) => {
+                        data.endereco.pessoa_id = pessoa.id
+                        EnderecosSrvc.createEndereco(data.endereco, userId, tx).then( () => {
+                            createContatos(data.contatos ?? [], pessoa.id, userId, tx).then( () => {
+                                accept(pessoa)
+                            }).catch( (err) => {
+                                reject(err)
+                            })
                         }).catch( (err) => {
                             reject(err)
-                        })
+                        }) 
                     }).catch( (err) => {
                         reject(err)
-                    }) 
+                    })
                 }).catch( (err) => {
                     reject(err)
                 })
             }).catch( (err) => {
                 reject(err)
             })
-        }).catch( (err) => {
-            reject(err)
-        })
+        }
     })
 }
 
@@ -111,7 +115,7 @@ exports.deletePessoa = (id, userId, tx, ft) => {
                     pessoa_id: id
                 }
                 User.findOne(options).then( (user) => {
-                    if (user != null && user != undefined && (userId != user.id)) {
+                    if (user != null && user != undefined) {
                         reject( writer.respondWithCode(403, { message: 'Você não tem permissão para fazer isso' }) )
                     } else {
                         FileSrvc.deleteFoto(pessoa.foto, ft).then( () => {

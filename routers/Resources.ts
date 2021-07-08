@@ -65,3 +65,13 @@ module.exports.listPaises = (req, res, next) => {
         });
     })
 };
+
+module.exports.listRoles = (req, res, next) => {
+    AuthSrvc.verifyToken(req, res, ['admin'], (userId) => {
+        Resources.listRoles().then( (response) => {
+            writer.writeJson(res, response);
+        }).catch( (response) => {
+            writer.writeJson(res, response);
+        });
+    })
+};

@@ -15,19 +15,23 @@ module.exports.createUser = (req, res, next) => {
 };
 
 module.exports.deleteUser = (req, res, next, id) => {
-    Users.deleteUser(id).then( (response) => {
-        writer.writeJson(res, response);
-    }).catch( (response) => {
-        writer.writeJson(res, response);
-    });
+    AuthSrvc.verifyToken(req, res, ['admin'], (userId) => {
+        Users.deleteUser(id, userId).then( (response) => {
+            writer.writeJson(res, response);
+        }).catch( (response) => {
+            writer.writeJson(res, response);
+        });
+    })
 };
 
-module.exports.filterUser = (req, res, next, page) => {
-    Users.filterUser(page).then( (response) => {
-        writer.writeJson(res, response);
-    }).catch( (response) => {
-        writer.writeJson(res, response);
-    });
+module.exports.filterUser = (req, res, next, page, search) => {
+    AuthSrvc.verifyToken(req, res, ['admin'], (userId) => {
+        Users.filterUser(page, search, userId).then( (response) => {
+            writer.writeJson(res, response);
+        }).catch( (response) => {
+            writer.writeJson(res, response);
+        });
+    })
 };
 
 module.exports.findUserById = (req, res, next, id) => {
