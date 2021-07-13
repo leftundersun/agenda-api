@@ -1,5 +1,5 @@
 require('dotenv').config()
-const { DB_HOST, DB_USER, DB_PASS } = process.env;
+const { DB_HOST, DB_USER, DB_PASS, DB_DLCT } = process.env;
 
 module.exports = {
     "development": {
@@ -7,7 +7,7 @@ module.exports = {
         "password": DB_PASS,
         "database": "agenda",
         "host": DB_HOST,
-        "dialect": "postgres"
+        "dialect": DB_DLCT
     },
     "test": {
         "username": "root",
