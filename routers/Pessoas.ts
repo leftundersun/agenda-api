@@ -6,8 +6,6 @@ var PessoasCtrl = require('../controllers/PessoasController');
 module.exports.createPessoa = (req, res, next) => {
     AuthSrvc.verifyToken(req, res, [], (userId) => {
         PessoasCtrl.createPessoa(req.body, req.files, userId).then( (response) => {
-            console.log('########### response')
-            console.log(response)
             writer.writeJson(res, response);
         }).catch( (response) => {
             writer.writeJson(res, response);
