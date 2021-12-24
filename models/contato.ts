@@ -1,4 +1,4 @@
-module.exports = function (sequelize: any, Sequelize: any) {
+module.exports = (sequelize: any, Sequelize: any) => {
     return sequelize.define("contato", {
         valor: {
             type: Sequelize.STRING(50),
