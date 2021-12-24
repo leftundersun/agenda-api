@@ -14,6 +14,7 @@
     "dbseed:mysql:estados": "mysql -h localhost -u root -p agenda < ../../db/estados.sql",
     "dbseed:mysql:cidades": "mysql -h localhost -u root -p agenda < ../../db/cidades.sql",
     "dbseed:mysql:seeders": "sequelize db:seed:all",
+    "start": "node index.ts",
     "dev": "nodemon index.ts",
     "dist": "gulp"
   },
