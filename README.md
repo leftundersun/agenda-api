@@ -7,7 +7,7 @@ Essa API Node é um exemplo
 Para rodar a api pela primeira vez, siga os seguintes passos:
 	* crie um banco de dados para essa aplicação
 	* crie um arquivo chamado `.env` na raiz do projeto como o exemplo abaixo
-		```
+		
 		//porta na qual sua API estará visível
 
 		PORT=3001
@@ -39,7 +39,7 @@ Para rodar a api pela primeira vez, siga os seguintes passos:
 		//diretório onde serão armazenados as fotos de perfil das pessoas cadastradas
 
 		USER_FOTOS_DIRECTORY=/home/user/pictures
-		```
+
 	* execute o commando `npm install` para instalar o pacotes necessários
 	* rode o sistema com o comando `npm run start`
 	* pare o sistema (Ctrl + C)
