@@ -17,10 +17,13 @@ gulp.task("default", function () {
         [
             '*',
             '.*',
-            '!*.ts',
             '**/*',
             '.**/*',
+            '!*.ts',
             '!**/*.ts',
+            '!.git/*',
+            '!.git',
+            '!.gitignore',
             '!node_modules/*'
         ]
       )
