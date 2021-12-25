@@ -5,46 +5,48 @@ Essa API Node é um exemplo
 
 ### Rodando pela primeira vez
 Para rodar a api pela primeira vez, siga os seguintes passos:
-	* crie um banco de dados para essa aplicação
-	* crie um arquivo chamado `.env` na raiz do projeto como o exemplo abaixo
-		
-		//porta na qual sua API estará visível
 
-		PORT=3001
+* crie um banco de dados para essa aplicação
 
-		//máquina na qual está seu banco de dados
+* crie um arquivo chamado `.env` na raiz do projeto como o exemplo abaixo:
+```
+	//porta na qual sua API estará visível
 
-		DB_HOST=localhost
+	PORT=3001
 
-		//usuário a ser utilizado para acessar o bando de dados
+	//máquina na qual está seu banco de dados
 
-		DB_USER=sirhennig
+	DB_HOST=localhost
 
-		//senha do usuário que acessará o banco de dados
+	//usuário a ser utilizado para acessar o bando de dados
 
-		DB_PASS=1234
+	DB_USER=sirhennig
 
-		//dialeto do banco de dados (verificar documentação do sequelize para preencher corretamente esse campo)
+	//senha do usuário que acessará o banco de dados
 
-		DB_DLCT=mysql
+	DB_PASS=1234
 
-		//nome que você deu ao banco de dados para essa aplicação
+	//dialeto do banco de dados (verificar documentação do sequelize para preencher corretamente esse campo)
 
-		DB_NAME=agenda
+	DB_DLCT=mysql
 
-		//segredo a ser utilizado para criar e validar os JWTs
+	//nome que você deu ao banco de dados para essa aplicação
 
-		TOKEN_SECRET=exemplo
+	DB_NAME=agenda
 
-		//diretório onde serão armazenados as fotos de perfil das pessoas cadastradas
+	//segredo a ser utilizado para criar e validar os JWTs
 
-		USER_FOTOS_DIRECTORY=/home/user/pictures
+	TOKEN_SECRET=exemplo
 
-	* execute o commando `npm install` para instalar o pacotes necessários
-	* rode o sistema com o comando `npm run start`
-	* pare o sistema (Ctrl + C)
-	* execute o commando `npm run seedall:mysql` ou `npm run seedall:postgre` dependendo do banco que você preferiu utilizar
-	* rode o sistema com o comando `npm run dev`
+	//diretório onde serão armazenados as fotos de perfil das pessoas cadastradas
+
+	USER_FOTOS_DIRECTORY=/home/user/pictures
+```
+* execute o commando `npm install` para instalar o pacotes necessários
+* rode o sistema com o comando `npm run start`
+* pare o sistema (Ctrl + C)
+* execute o commando `npm run seedall:mysql` ou `npm run seedall:postgre` dependendo do banco que você preferiu utilizar
+* rode o sistema com o comando `npm run dev`
 
 To view the Swagger UI interface:
 
