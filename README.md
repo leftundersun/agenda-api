@@ -10,42 +10,34 @@ Para rodar a api pela primeira vez, siga os seguintes passos:
 
 * crie um arquivo chamado `.env` na raiz do projeto como o exemplo abaixo:
 ```
-	//porta na qual sua API estará visível
+//porta na qual sua API estará visível
+PORT=3001
 
-	PORT=3001
+//máquina na qual está seu banco de dados
+DB_HOST=localhost
 
-	//máquina na qual está seu banco de dados
+//usuário a ser utilizado para acessar o bando de dados
+DB_USER=sirhennig
 
-	DB_HOST=localhost
+//senha do usuário que acessará o banco de dados
+DB_PASS=1234
 
-	//usuário a ser utilizado para acessar o bando de dados
+//dialeto do banco de dados (verificar documentação do sequelize para preencher corretamente esse campo)
+DB_DLCT=mysql
 
-	DB_USER=sirhennig
+//nome que você deu ao banco de dados para essa aplicação
+DB_NAME=agenda
 
-	//senha do usuário que acessará o banco de dados
+//segredo a ser utilizado para criar e validar os JWTs
+TOKEN_SECRET=exemplo
 
-	DB_PASS=1234
-
-	//dialeto do banco de dados (verificar documentação do sequelize para preencher corretamente esse campo)
-
-	DB_DLCT=mysql
-
-	//nome que você deu ao banco de dados para essa aplicação
-
-	DB_NAME=agenda
-
-	//segredo a ser utilizado para criar e validar os JWTs
-
-	TOKEN_SECRET=exemplo
-
-	//diretório onde serão armazenados as fotos de perfil das pessoas cadastradas
-
-	USER_FOTOS_DIRECTORY=/home/user/pictures
+//diretório onde serão armazenados as fotos de perfil das pessoas cadastradas
+USER_FOTOS_DIRECTORY=/home/user/pictures
 ```
 * execute o commando `npm install` para instalar o pacotes necessários
 * rode o sistema com o comando `npm run start`
 * pare o sistema (Ctrl + C)
-* execute o commando `npm run seedall:mysql` ou `npm run seedall:postgre` dependendo do banco que você preferiu utilizar
+* execute o commando `npm run seedall`
 * rode o sistema com o comando `npm run dev`
 
 To view the Swagger UI interface:
