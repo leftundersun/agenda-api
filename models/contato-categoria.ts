@@ -2,7 +2,8 @@ module.exports = (sequelize: any, Sequelize: any) => {
     return sequelize.define("contatoCategoria", {
         descricao: {
             type: Sequelize.STRING(50),
-            allowNull: false
+            allowNull: false,
+            unique: true
         }
     }, {
         tableName: 'contato_categorias',

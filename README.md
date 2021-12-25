@@ -22,7 +22,7 @@ DB_USER=sirhennig
 //senha do usuário que acessará o banco de dados
 DB_PASS=1234
 
-//dialeto do banco de dados (verificar documentação do sequelize para preencher corretamente esse campo)
+//dialeto do banco de dados (verificar documentação do sequelize)
 DB_DLCT=mysql
 
 //nome que você deu ao banco de dados para essa aplicação
@@ -39,11 +39,3 @@ USER_FOTOS_DIRECTORY=/home/user/pictures
 * pare o sistema (Ctrl + C)
 * execute o commando `npm run seedall`
 * rode o sistema com o comando `npm run dev`
-
-To view the Swagger UI interface:
-
-```
-open http://localhost:8080/docs
-```
-
-This project leverages the mega-awesome [swagger-tools](https://github.com/apigee-127/swagger-tools) middleware which does most all the work.
