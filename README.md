@@ -11,7 +11,7 @@ Para rodar a api pela primeira vez, siga os seguintes passos:
 * crie um arquivo chamado `.env` na raiz do projeto como o exemplo abaixo:
 ```
 //porta na qual sua API estará visível
-PORT=3001
+PORT=3000
 
 //máquina na qual está seu banco de dados
 DB_HOST=localhost
