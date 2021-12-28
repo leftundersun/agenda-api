@@ -37,4 +37,4 @@ http.createServer(app).listen(serverPort, () => {
 });
 
 var randomGenerator = require('./utils/random-generator.ts')
-randomGenerator.createRandomPessoas()
+//randomGenerator.createRandomPessoas()

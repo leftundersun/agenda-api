@@ -35,6 +35,6 @@ TOKEN_SECRET=exemplo
 USER_FOTOS_DIRECTORY=/home/user/pictures
 ```
 * execute o commando `npm install` para instalar o pacotes necessários
-* configure o banco de dados com o comando `npm run create`
-* inicie o banco de dados com o comando `npm run seed`
+* configure o banco de dados com o comando `npm run db:create`
+* inicie o banco de dados com o comando `npm run db:seed`
 * rode o sistema com o comando `npm run dev`
