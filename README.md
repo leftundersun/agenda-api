@@ -1,7 +1,7 @@
 # API Node.js
 
 ## Visão geral
-Essa API Node é um exemplo
+Essa API Node ainda está em desenvolvimento
 
 ### Rodando pela primeira vez
 Para rodar a api pela primeira vez, siga os seguintes passos:
