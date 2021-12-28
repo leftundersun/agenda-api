@@ -1,12 +1,12 @@
 'use strict';
 
 var writer = require('../utils/writer.ts');
-var Users = require('../controllers/UsersController');
+var UsersCtrl = require('../controllers/UsersController');
 var AuthSrvc = require('../services/AuthService');
 
 module.exports.createUser = (req, res, next) => {
     AuthSrvc.verifyToken(req, res, ['admin'], (userId) => {
-        Users.createUser(req.body, req.files, userId).then( (response) => {
+        UsersCtrl.createUser(req.body, req.files, userId).then( (response) => {
             writer.writeJson(res, response);
         }).catch( (response) => {
             writer.writeJson(res, response);
@@ -16,7 +16,7 @@ module.exports.createUser = (req, res, next) => {
 
 module.exports.deleteUser = (req, res, next, id) => {
     AuthSrvc.verifyToken(req, res, ['admin'], (userId) => {
-        Users.deleteUser(id, userId).then( (response) => {
+        UsersCtrl.deleteUser(id, userId).then( (response) => {
             writer.writeJson(res, response);
         }).catch( (response) => {
             writer.writeJson(res, response);
@@ -26,7 +26,7 @@ module.exports.deleteUser = (req, res, next, id) => {
 
 module.exports.filterUser = (req, res, next, page, search) => {
     AuthSrvc.verifyToken(req, res, ['admin'], (userId) => {
-        Users.filterUser(page, search, userId).then( (response) => {
+        UsersCtrl.filterUser(page, search, userId).then( (response) => {
             writer.writeJson(res, response);
         }).catch( (response) => {
             writer.writeJson(res, response);
@@ -35,16 +35,8 @@ module.exports.filterUser = (req, res, next, page, search) => {
 };
 
 module.exports.findUserById = (req, res, next, id) => {
-    Users.findUserById(id).then( (response) => {
-        writer.writeJson(res, response);
-    }).catch( (response) => {
-        writer.writeJson(res, response);
-    });
-};
-
-module.exports.getUser = (req, res, next) => {
-    AuthSrvc.verifyToken(req, res, [], (userId) => {
-        Users.getUser(userId).then( (response) => {
+    AuthSrvc.verifyToken(req, res, ['admin'], (userId) => {
+        UsersCtrl.findUserById(id).then( (response) => {
             writer.writeJson(res, response);
         }).catch( (response) => {
             writer.writeJson(res, response);
@@ -52,10 +44,28 @@ module.exports.getUser = (req, res, next) => {
     })
 };
 
-module.exports.updateUser = (req, res, next, id) => {
-    Users.updateUser(id).then( (response) => {
-        writer.writeJson(res, response);
-    }).catch( (response) => {
-        writer.writeJson(res, response);
+module.exports.getUser = (req, res, next) => {
+    AuthSrvc.verifyToken(req, res, [], (userId) => {
+        UsersCtrl.getUser(userId).then( (response) => {
+            writer.writeJson(res, response);
+        }).catch( (response) => {
+            writer.writeJson(res, response);
+        });
+    })
+};
+
+module.exports.updateUser = (req, res, next, body, id) => {
+    AuthSrvc.verifyToken(req, res, ['admin'], (userId) => {
+        console.log('################## id')
+        console.log(id)
+        console.log('################## req.body')
+        console.log(req.body)
+        console.log('################## req.files')
+        console.log(req.files)
+        UsersCtrl.updateUser(req.body, req.files, id, userId).then( (response) => {
+            writer.writeJson(res, response);
+        }).catch( (response) => {
+            writer.writeJson(res, response);
+        });
     });
 };

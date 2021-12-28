@@ -11,7 +11,7 @@ var oas3Tools = require('oas3-tools');
 var serverPort = process.env.PORT;
 
 var db = require('./models')
-db.sequelize.sync()
+//db.sequelize.sync()
 
 // swaggerRouter configuration
 var options = {
@@ -34,9 +34,7 @@ for (let i = 2; i < openApiApp._router.stack.length; i++) {
 // Initialize the Swagger middleware
 http.createServer(app).listen(serverPort, () => {
     console.log('Your server is listening on port %d (http://localhost:%d)', serverPort, serverPort);
-    console.log('Swagger-ui is available on http://localhost:%d/docs', serverPort);
 });
 
 var randomGenerator = require('./utils/random-generator.ts')
-//randomGenerator.createRandomPessoas()
-
+randomGenerator.createRandomPessoas()

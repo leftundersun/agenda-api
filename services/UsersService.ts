@@ -119,8 +119,50 @@ exports.filterUser = (page, search='', userId) => {
 }
 
 exports.findUserById = (id) => {
-    return new Promise<void>((accept, reject) => {
-        accept()
+    return new Promise<object>((accept, reject) => {
+        var options = {
+            where: {
+                id: id
+            },
+            include: [
+                Role,
+                {
+                    model: Pessoa,
+                    as: 'pessoa',
+                    include: {
+                        model: Endereco,
+                        include: {
+                            model: Cidade,
+                            include: {
+                                model: Estado,
+                                include: {
+                                    model: Pais,
+                                    as: 'pais'
+                                }
+                            }
+                        }
+                    }
+                }
+            ]
+        }
+        User.findOne(options).then( (user) => {
+            if (user != null && user != undefined) {
+                if (user.pessoa.foto != '') {
+                    FileSrvc.getFoto(user.pessoa.foto).then( (data) => {
+                        user.pessoa.foto = data
+                        accept( formatUser(user) )
+                    }).catch( (err) => {
+                        reject(err)
+                    })
+                } else {
+                    accept( formatUser(user) )
+                }
+            } else {
+                reject( writer.respondWithCode(404, { message: 'Usuário não encontrado' }) )
+            }
+        }).catch( (err) => {
+            reject(err)
+        })
     });
 }
 
@@ -211,10 +253,71 @@ exports.getUser = (id) => {
     });
 }
 
-exports.updateUser = (id) => {
+exports.updateUser = (data, id, userId, tx, tf) => {
     return new Promise<void>((accept, reject) => {
-        accept()
+        console.log('############## data')
+        console.log(data)
+        var options = {
+            where: {
+                id: id
+            },
+            include: [
+                Role,
+                {
+                    model: Pessoa,
+                    as: 'pessoa',
+                    include: {
+                        model: Endereco,
+                        include: {
+                            model: Cidade,
+                            include: {
+                                model: Estado,
+                                include: {
+                                    model: Pais,
+                                    as: 'pais'
+                                }
+                            }
+                        }
+                    }
+                }
+            ],
+            transaction: tx
+        }
+        User.findOne(options).then( (user) => {
+            if (user != null && user !+ undefined) {
+
+            } else {
+                reject( writer.respondWithCode(404, { message: 'Usuário não encontrado' }) )
+            }
+        }).catch( (err) => {
+            reject(err)
+        })
     });
+}
+
+var validateUser = (data, tx, id=null) => {
+    return new Promise<void>((accept, reject) => {
+        var options: any = {
+            where: {
+                username: data.username
+            },
+            transaction: tx
+        }
+        if (id != null) {
+            options.where.id = {
+                [Op.ne]: id
+            }
+        }
+        User.findOne(options).then( (user) => {
+            if (user != null && user != undefined) {
+                reject( writer.respondWithCode(409, { message: 'Esse nome de usuário já está em uso' }) )
+            } else {
+                accept()
+            }
+        }).catch( (err) => {
+            reject(err)
+        })
+    })
 }
 
 var formatUser = (dbObj) => {

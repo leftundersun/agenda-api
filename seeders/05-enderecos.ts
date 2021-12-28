@@ -3,21 +3,21 @@
 module.exports = {
     up: (queryInterface, Sequelize) => {
         return queryInterface.bulkInsert('enderecos', [{
-            bairro: 'Centro',
-            logradouro: 'R. Saldanha Marinho',
-            numero: '570',
-            complemento: 'Sala 404',
-            cep: '95700082',
+            complemento: "Sala 195",
+            numero: "471",
+            bairro: "Centro",
+            logradouro: "R. Osvaldo Aranha",
+            cep: "95700000",
             cidade_id: 4649,
             pessoa_id: 1,
             created_at: new Date(),
             updated_at: new Date()
         },{
-            bairro: 'Centro',
-            logradouro: 'R. Saldanha Marinho',
-            numero: '570',
-            complemento: 'Sala 404',
-            cep: '95700082',
+            complemento: "Sala 195",
+            numero: "471",
+            bairro: "Centro",
+            logradouro: "R. Osvaldo Aranha",
+            cep: "95700000",
             cidade_id: 4649,
             pessoa_id: 2,
             created_at: new Date(),

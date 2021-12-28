@@ -19,11 +19,11 @@ module.exports.createRandomPessoas = () => {
                             cpf: validCpf,
                             data_nascimento: "01/01/2000",
                             endereco: {
-                                complemento: "sala 404",
-                                numero: "570",
+                                complemento: "Sala 195",
+                                numero: "471",
                                 bairro: "Centro",
-                                logradouro: "R. Saldanha Marinho",
-                                cep: "95700082",
+                                logradouro: "R. Osvaldo Aranha",
+                                cep: "95700-000",
                                 cidade_id: 4649
                             },
                             contatos: [
