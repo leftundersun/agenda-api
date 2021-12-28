@@ -1,7 +1,9 @@
 # API Node.js
 
 ## Visão geral
-Essa API Node ainda está em desenvolvimento
+Essa API ainda está em desenvolvimento.
+É apenas um exemplo. Nela é possível cadastrar pessoas com endereços e contatos.
+Um front-end Vue.js também está em desenvolvimento mas ainda não está disponível.
 
 ### Rodando pela primeira vez
 Para rodar a api pela primeira vez, siga os seguintes passos:
