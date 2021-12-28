@@ -1,4 +1,4 @@
-# API Node.js
+# API Agenda de contatos Node.js
 
 ## Visão geral
 Essa API ainda está em desenvolvimento.
