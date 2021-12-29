@@ -257,7 +257,7 @@ exports.updateUser = (data, id, userId, tx, tf) => {
     return new Promise<void>((accept, reject) => {
         console.log('############## data')
         console.log(data)
-        var options = {
+        var options: any = {
             where: {
                 id: id
             },
@@ -284,8 +284,29 @@ exports.updateUser = (data, id, userId, tx, tf) => {
             transaction: tx
         }
         User.findOne(options).then( (user) => {
-            if (user != null && user !+ undefined) {
-
+            if (user != null && user != undefined) {
+                // if password ? bcrypt : delete
+                validateUser(data, tx, id).then( () => {
+                    PessoaSrvc.updatePessoa(data.pessoa, data.pessoa_id, userId, tx, tf).then( () => {
+                        delete data.id
+                        options = {
+                            where: {
+                                id: id
+                            },
+                            transaction: tx
+                        }
+                        User.update(data, options).then( () => {
+                            //update roles
+                            accept()
+                        }).catch( (err) => {
+                            reject(err)
+                        })
+                    }).catch( (err) => {
+                        reject(err)
+                    })
+                }).catch( (err) => {
+                    reject(err)
+                })
             } else {
                 reject( writer.respondWithCode(404, { message: 'Usuário não encontrado' }) )
             }
