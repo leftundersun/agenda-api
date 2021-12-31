@@ -285,19 +285,38 @@ exports.updateUser = (data, id, userId, tx, tf) => {
         }
         User.findOne(options).then( (user) => {
             if (user != null && user != undefined) {
-                // if password ? bcrypt : delete
                 validateUser(data, tx, id).then( () => {
                     PessoaSrvc.updatePessoa(data.pessoa, data.pessoa_id, userId, tx, tf).then( () => {
-                        delete data.id
-                        options = {
-                            where: {
-                                id: id
-                            },
-                            transaction: tx
-                        }
-                        User.update(data, options).then( () => {
-                            //update roles
-                            accept()
+                        var rolesIds = Array.from(data.roles, (role: any) => { return role.id })
+                        var userRoles = Array.from(user.roles, (role: any) => { return role.id })
+                        var rolesToAdd = rolesIds.filter( (roleId: number) => !userRoles.includes(roleId) )
+                        var rolesToRemove = userRoles.filter( (roleId: number) => !rolesIds.includes(roleId) )
+                        user.removeRoles(rolesToRemove, { transaction: tx }).then( () => {
+                            user.addRoles(rolesToAdd, { transaction: tx }).then( () => {
+                                bcryptPassword(data.password).then( (hash) => {
+                                    if (hash.length > 0) {
+                                        data.password = hash
+                                    } else {
+                                        delete data.password
+                                    }
+                                    delete data.id
+                                    options = {
+                                        where: {
+                                            id: id
+                                        },
+                                        transaction: tx
+                                    }
+                                    User.update(data, options).then( () => {
+                                        accept()
+                                    }).catch( (err) => {
+                                        reject(err)
+                                    })
+                                }).catch( (err) => {
+                                    reject(err)
+                                })
+                            }).catch( (err) => {
+                                reject(err)
+                            })
                         }).catch( (err) => {
                             reject(err)
                         })
@@ -314,6 +333,20 @@ exports.updateUser = (data, id, userId, tx, tf) => {
             reject(err)
         })
     });
+}
+
+var bcryptPassword = (password) => {
+    return new Promise<string>((accept, reject) => {
+        if (password != null && password != undefined && password != '') {
+            bcrypt.hash(password, 10).then( (hash) => {
+                accept(hash)
+            }).catch( (err) => {
+                reject(err)
+            })
+        } else {
+            accept('')
+        }
+    })
 }
 
 var validateUser = (data, tx, id=null) => {

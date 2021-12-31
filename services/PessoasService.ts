@@ -55,35 +55,9 @@ exports.createPessoa = (data, userId, tx, ft) => {
 
 var createContatos = (contatos, pessoaId, userId, tx) => {
     return new Promise<void>((accept, reject) => {
-        foreach(contatos, (contato) => {
-            return new Promise<void>((accept, reject) => {
-                contato.pessoa_id = pessoaId
-                contato.user_id = userId
-                ContatosSrvc.createContato(contato, userId, tx).then( () => {
-                    accept()
-                }).catch( (err) => {
-                    reject(err)
-                })
-            })
-        }).then( () => {
-            accept()
-        }).catch( (err) => {
-            reject(err)
-        })
-    })
-}
-
-var updateContatos = (contatos, pessoaId, userId, tx) => {
-    return new Promise<void>((accept, reject) => {
-        foreach(contatos, (contato) => {
-            return new Promise<void>((accept, reject) => {
-                if (contato.id > 0) {
-                    ContatosSrvc.updateContato(contato, contato.id, userId, tx).then( () => {
-                        accept()
-                    }).catch( (err) => {
-                        reject(err)
-                    })
-                } else {
+        if (contatos != null && contatos != undefined) {
+            foreach(contatos, (contato) => {
+                return new Promise<void>((accept, reject) => {
                     contato.pessoa_id = pessoaId
                     contato.user_id = userId
                     ContatosSrvc.createContato(contato, userId, tx).then( () => {
@@ -91,13 +65,47 @@ var updateContatos = (contatos, pessoaId, userId, tx) => {
                     }).catch( (err) => {
                         reject(err)
                     })
-                }
+                })
+            }).then( () => {
+                accept()
+            }).catch( (err) => {
+                reject(err)
             })
-        }).then( () => {
+        } else {
             accept()
-        }).catch( (err) => {
-            reject(err)
-        })
+        }
+    })
+}
+
+var updateContatos = (contatos, pessoaId, userId, tx) => {
+    return new Promise<void>((accept, reject) => {
+        if (contatos != null && contatos != undefined) {
+            foreach(contatos, (contato) => {
+                return new Promise<void>((accept, reject) => {
+                    if (contato.id > 0) {
+                        ContatosSrvc.updateContato(contato, contato.id, userId, tx).then( () => {
+                            accept()
+                        }).catch( (err) => {
+                            reject(err)
+                        })
+                    } else {
+                        contato.pessoa_id = pessoaId
+                        contato.user_id = userId
+                        ContatosSrvc.createContato(contato, userId, tx).then( () => {
+                            accept()
+                        }).catch( (err) => {
+                            reject(err)
+                        })
+                    }
+                })
+            }).then( () => {
+                accept()
+            }).catch( (err) => {
+                reject(err)
+            })
+        } else {
+            accept()
+        }
     })
 }
 
