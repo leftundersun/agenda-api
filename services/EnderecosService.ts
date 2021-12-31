@@ -78,7 +78,7 @@ var validateEndereco = (data) => {
             console.log(data[field])
             return ( data[field] != null && data[field] != undefined && data[field].trim() != '' )
         }
-        var fields = ['bairro', 'logradouro', 'numero', 'complemento', 'cep']
+        var fields = ['bairro', 'logradouro', 'numero', 'cep']
         var fieldsAreValid = true
         fields.forEach( (field) => {
             if (!isValid(field)) {
@@ -88,6 +88,9 @@ var validateEndereco = (data) => {
         if (!fieldsAreValid) {
             reject( writer.respondWithCode(400, { message: 'Informações de endereço incompletas' }) )
         } else {
+            if (data.complemento == null || data.complemento == undefined) {
+                data.complemento = ''
+            }
             if (data.cidade_id == 0) {
                 data.cidade_id = data.cidade.id
             }

@@ -13,7 +13,7 @@ module.exports.createRandomPessoas = () => {
             }
             foreach(indexes, (index) => {
                 return new Promise<void>( (accept, reject) => {
-                    createValidCpf().then( (validCpf) => {
+                    createValidCpf(tx).then( (validCpf) => {
                         var pessoa: any = {
                             nome: "Teste " + index,
                             cpf: validCpf,

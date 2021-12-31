@@ -1,4 +1,6 @@
 var writer = require('./writer.ts');
+var db = require('../models')
+var Pessoa = db.pessoa
 
 exports.validateCpf = (originalCpf: string) => {
     return new Promise<string>( (accept, reject) => {
@@ -51,9 +53,9 @@ exports.validateCpf = (originalCpf: string) => {
     })
 }
 
-exports.createValidCpf = () => {
+exports.createValidCpf = (tx) => {
     return new Promise<string>( (accept, reject) => {
-        try {
+        var create = () => {
             var digitos = [];
             for (var i = 0; i < 9; i++) {
                 var digito = Math.floor(Math.random() * 10)
@@ -76,9 +78,18 @@ exports.createValidCpf = () => {
             }
             digitos.push((soma % 11) < 2 ? 0 : 11 - (soma % 11))
 
-            accept(digitos.join(''))
-        } catch (err) {
-            reject(err)
+            var cpf = digitos.join('')
+
+            Pessoa.findOne({ where: { cpf: cpf }, transaction: tx }).then( (result) => {
+                if (result != null && result != undefined) {
+                    create()
+                } else {
+                    accept(cpf)
+                }
+            }).catch( (err) => {
+                reject(err)
+            })
         }
+        create()
     })
 }
