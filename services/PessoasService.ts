@@ -28,7 +28,7 @@ exports.createPessoa = (data, userId, tx, ft) => {
         } else {
             FileSrvc.saveFoto( data.foto, ft, tx ).then( (filename) => {
                 data.foto = filename ?? ''
-                validatePessoa(data).then( (data) => {
+                validatePessoa(data, tx).then( (data) => {
                     Pessoa.create( data, { transaction: tx } ).then( (pessoa) => {
                         data.endereco.pessoa_id = pessoa.id
                         EnderecosSrvc.createEndereco(data.endereco, userId, tx).then( () => {
@@ -355,7 +355,7 @@ exports.updatePessoa = (data, id, userId, tx, ft) => {
                     } else {
                         delete data.foto
                     }
-                    validatePessoa(data).then( (data) => {
+                    validatePessoa(data, tx, id).then( (data) => {
                         delete data.id
                         options = {
                             where: {
@@ -393,10 +393,10 @@ exports.updatePessoa = (data, id, userId, tx, ft) => {
 }
 
 
-var validatePessoa = (data) => {
+var validatePessoa = (data, tx, id=null) => {
     return new Promise<any>((accept, reject) => {
         if ( data.nome != null && data.nome != undefined && data.nome.trim() != '' ) {
-            validateCpf(data.cpf).then( (cpf) => {
+            validateCpf(data.cpf, tx, id).then( (cpf) => {
                 data.cpf = cpf
                 validateDataNascimento(data).then( (data) => {
                     accept(data)

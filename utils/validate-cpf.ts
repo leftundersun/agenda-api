@@ -1,8 +1,9 @@
 var writer = require('./writer.ts');
 var db = require('../models')
+var Op = db.Sequelize.Op
 var Pessoa = db.pessoa
 
-exports.validateCpf = (originalCpf: string) => {
+exports.validateCpf = (originalCpf: string, tx: any, id: number = null) => {
     return new Promise<string>( (accept, reject) => {
         if (originalCpf.length == 14) {
             originalCpf = originalCpf.split('.').join('').split('-').join('')
@@ -42,7 +43,26 @@ exports.validateCpf = (originalCpf: string) => {
 
                 cpf = cpf.join('')
                 if (cpf == originalCpf) {
-                    accept(cpf)
+                    var options: any = {
+                        where: {
+                            cpf: cpf
+                        },
+                        transaction: tx
+                    }
+                    if (id != null) {
+                        options.where.id = {
+                            [Op.ne]: id
+                        }
+                    }
+                    Pessoa.findOne(options).then( (result) => {
+                        if (result != null && result != undefined) {
+                            reject( writer.respondWithCode(400, { message: 'CPF já cadastrado para outra pessoa' }) )
+                        } else {
+                            accept(cpf)
+                        }
+                    }).catch( (err) => {
+                        reject(err)
+                    })
                 } else {
                     reject( writer.respondWithCode(400, { message: 'CPF inválido' }) )
                 }
