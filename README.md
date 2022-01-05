@@ -5,7 +5,7 @@ Essa API ainda está em desenvolvimento.
 
 É apenas um exemplo. Nela é possível cadastrar pessoas com endereço e contatos.
 
-Um front-end Vue.js também está em desenvolvimento mas ainda não está disponível.
+Um front-end Vue.js também está em desenvolvimento, você pode conferir em `github.com/sirhennig/agenda-spa`.
 
 ### Rodando pela primeira vez
 Para rodar a api pela primeira vez, siga os seguintes passos:
