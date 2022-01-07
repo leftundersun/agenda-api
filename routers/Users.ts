@@ -56,12 +56,6 @@ module.exports.getUser = (req, res, next) => {
 
 module.exports.updateUser = (req, res, next, body, id) => {
     AuthSrvc.verifyToken(req, res, ['admin'], (userId) => {
-        console.log('################## id')
-        console.log(id)
-        console.log('################## req.body')
-        console.log(req.body)
-        console.log('################## req.files')
-        console.log(req.files)
         UsersCtrl.updateUser(req.body, req.files, id, userId).then( (response) => {
             writer.writeJson(res, response);
         }).catch( (response) => {
