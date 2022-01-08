@@ -8,6 +8,7 @@
     "db:destroy": "sequelize db:migrate:undo:all",
     "db:seed": "sequelize db:seed:all",
     "db:unseed": "sequelize db:seed:undo:all",
+    "mock": "ts-node mock.ts",
     "dev": "nodemon index.ts",
     "dist": "gulp"
   },

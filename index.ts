@@ -35,6 +35,3 @@ for (let i = 2; i < openApiApp._router.stack.length; i++) {
 http.createServer(app).listen(serverPort, () => {
     console.log('Your server is listening on port %d (http://localhost:%d)', serverPort, serverPort);
 });
-
-var randomGenerator = require('./utils/random-generator.ts')
-//randomGenerator.createRandomPessoas()

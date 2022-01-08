@@ -37,8 +37,14 @@ TOKEN_SECRET=exemplo
 
 //diretório onde serão armazenados as fotos de perfil das pessoas cadastradas
 USER_FOTOS_DIRECTORY=/home/user/pictures
+
+//caminho para uma foto de perfil a ser utilizada pelo mock
+DEFAULT_PROFILE_PICTURE=/home/user/user-default.png
 ```
 * execute o commando `npm install` para instalar o pacotes necessários
 * configure o banco de dados com o comando `npm run db:create`
 * inicie o banco de dados com o comando `npm run db:seed`
 * rode o sistema com o comando `npm run dev`
+
+### Criando mock data
+Para criar dados de teste, você pode executar o comando `npm run mock`, isso irá cadastras 10.000 pessoas com endereço e 2 contatos cada.

@@ -41,7 +41,7 @@ exports.login = (req) => {
     })
 }
 
-exports.verifyToken = (req, res, roles, next) => {
+exports.verifyToken = (req, res, roles, next, callback=null) => {
     extractTokenFromReq(req).then( (token) => {
         jwt.verify(token, process.env.TOKEN_SECRET, (err, decoded) => {
             if (err) {
@@ -62,7 +62,11 @@ exports.verifyToken = (req, res, roles, next) => {
                             }
                         })
                         if (!authorized) {
-                            writer.writeJson( res, writer.respondWithCode(403, { message: 'Você não tem permissão para fazer isso' }) )
+                            if (callback != null && callback != undefined) {
+                                callback(user.id)
+                            } else {
+                                writer.writeJson( res, writer.respondWithCode(403, { message: 'Você não tem permissão para fazer isso' }) )
+                            }
                         } else {
                             next(user.id)
                         }

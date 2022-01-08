@@ -40,13 +40,14 @@ module.exports.createRandomPessoas = () => {
                                 }
                             ]
                         }
-                        fs.readFile('/home/anderson/Downloads/default-user-image.png', (err, data) => {
+                        var profilePicturePathAndName = process.env.DEFAULT_PROFILE_PICTURE
+                        fs.readFile(profilePicturePathAndName, (err, data) => {
                             if (err != null && err != undefined) {
                                 reject(err)
                             } else {
                                 pessoa.foto = {
                                     buffer: data,
-                                    mimetype: 'image/png'
+                                    mimetype: 'image/' + profilePicturePathAndName.split('.')[profilePicturePathAndName.split('.').length - 1]
                                 }
                                 PessoaSrvc.createPessoa(pessoa, 1, tx, ft).then( () => {
                                     accept()

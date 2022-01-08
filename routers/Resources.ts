@@ -67,7 +67,7 @@ module.exports.listPaises = (req, res, next) => {
 };
 
 module.exports.listRoles = (req, res, next) => {
-    AuthSrvc.verifyToken(req, res, ['admin'], (userId) => {
+    AuthSrvc.verifyToken(req, res, [], (userId) => {
         Resources.listRoles().then( (response) => {
             writer.writeJson(res, response);
         }).catch( (response) => {

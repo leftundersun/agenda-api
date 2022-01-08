@@ -41,6 +41,16 @@ module.exports.findUserById = (req, res, next, id) => {
         }).catch( (response) => {
             writer.writeJson(res, response);
         });
+    }, (userId) => {
+        if (id == userId) {
+            UsersCtrl.findUserById(id).then( (response) => {
+                writer.writeJson(res, response);
+            }).catch( (response) => {
+                writer.writeJson(res, response);
+            });
+        } else {
+            writer.writeJson( res, writer.respondWithCode(403, { message: 'Você não tem permissão para fazer isso' }) )
+        }
     })
 };
 
@@ -61,5 +71,15 @@ module.exports.updateUser = (req, res, next, body, id) => {
         }).catch( (response) => {
             writer.writeJson(res, response);
         });
+    }, (userId) => {
+        if (id == userId) {
+            UsersCtrl.updateUser(req.body, req.files, id, userId).then( (response) => {
+                writer.writeJson(res, response);
+            }).catch( (response) => {
+                writer.writeJson(res, response);
+            });
+        } else {
+            writer.writeJson( res, writer.respondWithCode(403, { message: 'Você não tem permissão para fazer isso' }) )
+        }
     });
 };
