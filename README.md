@@ -47,4 +47,4 @@ DEFAULT_PROFILE_PICTURE=/home/user/user-default.png
 * rode o sistema com o comando `npm run dev`
 
 ### Criando mock data
-Para criar dados de teste, você pode executar o comando `npm run mock`, isso irá cadastras 10.000 pessoas com endereço e 2 contatos cada.
+Para criar dados de teste, você pode executar o comando `npm run mock`, isso irá cadastrar 10.000 pessoas com endereço e 2 contatos cada.
