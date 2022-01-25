@@ -4,12 +4,14 @@
   "description": "Essa API Node é um exemplo",
   "main": "index.js",
   "scripts": {
-    "db:create": "sequelize db:migrate",
-    "db:destroy": "sequelize db:migrate:undo:all",
-    "db:seed": "sequelize db:seed:all",
-    "db:unseed": "sequelize db:seed:undo:all",
-    "mock": "ts-node mock.ts",
-    "dev": "nodemon index.ts",
+    "dev": "npm-run-all dev:step:nomock:** -s",    
+    "dev:step:nomock:await-mysql": "ts-node scripts/check-mysql.ts",
+    "dev:step:dropdb": "sequelize db:drop",
+    "dev:step:nomock:createdb": "sequelize db:create",
+    "dev:step:nomock:migration": "sequelize db:migrate",
+    "dev:step:nomock:dbseed": "sequelize db:seed:all",
+    "dev:step:mock": "ts-node scripts/mock.ts",
+    "dev:step:nomock:start": "nodemon index.ts",
     "dist": "gulp"
   },
   "keywords": [

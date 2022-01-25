@@ -32,14 +32,11 @@ DB_DLCT=mysql
 // nome que você deu ao banco de dados para essa aplicação
 DB_NAME=agenda
 
-// segredo a ser utilizado para criar e validar os JWTs
-TOKEN_SECRET=exemplo
-
 // diretório onde serão armazenados as fotos de perfil das pessoas cadastradas
 USER_FOTOS_DIRECTORY=/home/user/pictures
 
 // caminho para uma foto de perfil a ser utilizada pelo mock
-DEFAULT_PROFILE_PICTURE=/home/user/user-default.png
+DEFAULT_PROFILE_PICTURE=./user-default.png
 ```
 * execute o commando `npm install` para instalar o pacotes necessários
 * configure o banco de dados com o comando `npm run db:create`
