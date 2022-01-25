@@ -9,7 +9,7 @@
     "dev:step:dropdb": "sequelize db:drop",
     "dev:step:nomock:createdb": "sequelize db:create",
     "dev:step:nomock:migration": "sequelize db:migrate",
-    "dev:step:nomock:dbseed": "sequelize db:seed:all",
+    "dev:step:nomock:dbseed": "ts-node scripts/seed-all.ts",
     "dev:step:mock": "ts-node scripts/mock.ts",
     "dev:step:nomock:start": "nodemon index.ts",
     "dist": "gulp"
