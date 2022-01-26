@@ -4,6 +4,7 @@
   "description": "Essa API Node é um exemplo",
   "main": "index.js",
   "scripts": {
+    "mock": "npm-run-all dev:step:** -s",    
     "dev": "npm-run-all dev:step:nomock:** -s",    
     "dev:step:nomock:await-mysql": "ts-node scripts/check-mysql.ts",
     "dev:step:dropdb": "sequelize db:drop",
