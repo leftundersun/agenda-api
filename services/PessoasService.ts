@@ -115,31 +115,44 @@ exports.deletePessoa = (id, userId, tx, ft) => {
             where: {
                 id: id
             },
+            include: [
+                {
+                    model: User,
+                    as: 'benfeitores'
+                }
+            ],
             transaction: tx
         }
         Pessoa.findOne(options).then( (pessoa) => {
             if (pessoa != null && pessoa != undefined) {
-                options.where = {
-                    pessoa_id: id
+                options = {
+                    where: {
+                        pessoa_id: id
+                    }
                 }
                 User.findOne(options).then( (user) => {
                     if (user != null && user != undefined) {
                         reject( writer.respondWithCode(403, { message: 'Você não tem permissão para fazer isso' }) )
                     } else {
-                        FileSrvc.deleteFoto(pessoa.foto, ft).then( () => {
-                            ContatosSrvc.deleteContatosByPessoaId(pessoa.id, tx).then( () => {
-                                EnderecosSrvc.deleteEnderecoByPessoaId(pessoa.id, tx).then( () => {
-                                    pessoa.destroy({ transaction: tx }).then( () => {
-                                        accept()
+                        var pessoaBenfeitores = Array.from(pessoa.benfeitores, (benfeitor: any) => { return benfeitor.id })
+                        pessoa.removeBenfeitores(pessoaBenfeitores, { transaction: tx }).then( () => {
+                            FileSrvc.deleteFoto(pessoa.foto, ft).then( () => {
+                                ContatosSrvc.deleteContatosByPessoaId(pessoa.id, tx).then( () => {
+                                    EnderecosSrvc.deleteEnderecoByPessoaId(pessoa.id, tx).then( () => {
+                                        pessoa.destroy({ transaction: tx }).then( () => {
+                                            accept()
+                                        }).catch( (err) => {
+                                            reject(err)
+                                        })
                                     }).catch( (err) => {
                                         reject(err)
                                     })
                                 }).catch( (err) => {
                                     reject(err)
                                 })
-                            }).catch( (err) => {
-                                reject(err)
                             })
+                        }).catch( (err) => {
+                            reject(err)
                         })
                     }
                 }).catch( (err) => {

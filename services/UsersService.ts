@@ -60,7 +60,13 @@ exports.deleteUser = (id, userId, tx, ft) => {
             where: {
                 id: id
             },
-            include: Role,
+            include: [
+                Role,
+                {
+                    model: Pessoa,
+                    as: 'favoritos'
+                }
+            ],
             transaction: tx
         }
         User.findOne(options).then( (user) => {
@@ -68,8 +74,13 @@ exports.deleteUser = (id, userId, tx, ft) => {
                 ContatosSrvc.deleteContatosByUserId(user.id, tx).then( () => {
                     var userRoles = Array.from(user.roles, (role: any) => { return role.id })
                     user.removeRoles(userRoles, { transaction: tx }).then( () => {
-                        user.destroy({ transaction: tx }).then( () => {
-                            accept()
+                        var userFavoritos = Array.from(user.favoritos, (favorito: any) => { return favorito.id })
+                        user.removeFavoritos(userFavoritos, { transaction: tx }).then( () => {
+                            user.destroy({ transaction: tx }).then( () => {
+                                accept()
+                            }).catch( (err) => {
+                                reject(err)
+                            })
                         }).catch( (err) => {
                             reject(err)
                         })

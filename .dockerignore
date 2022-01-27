@@ -3,3 +3,4 @@ agenda
 .git
 .gitignore
 .env
+dist

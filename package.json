@@ -13,12 +13,13 @@
     "dev:step:nomock:dbseed": "ts-node scripts/seed-all.ts",
     "dev:step:mock": "ts-node scripts/mock.ts",
     "dev:step:nomock:start": "nodemon index.ts",
-    "dist": "npm-run-all dist:step:** -s",
-    "dist:step:await-mysql": "ts-node dist/scripts/check-mysql.js",
-    "dist:step:createdb": "sequelize db:create --config dist/config/config.js",
-    "dist:step:migration": "sequelize db:migrate --config dist/config/config.js",
-    "dist:step:dbseed": "ts-node dist/scripts/seed-all.js",
-    "dist:step:start": "node dist/index.js"
+    "preprod": "gulp",
+    "prod": "npm-run-all prod:step:** -s",
+    "prod:step:await-mysql": "ts-node dist/scripts/check-mysql.js",
+    "prod:step:createdb": "sequelize db:create --config dist/config/config.js",
+    "prod:step:migration": "sequelize db:migrate --config dist/config/config.js",
+    "prod:step:dbseed": "ts-node dist/scripts/seed-all.js",
+    "prod:step:start": "node dist/index.js"
   },
   "keywords": [
     "swagger"
