@@ -1,4 +1,4 @@
-'use strict';
+'use strict'
 var db = require('../models')
 var Op = db.Sequelize.Op
 var User = db.user
@@ -12,11 +12,12 @@ var Contato = db.contato
 var ContatoCategoria = db.contatoCategoria
 var ContatoTipo = db.contatoTipo
 var bcrypt = require('bcrypt')
-var FileSrvc = require('./FileService');
-var PessoaSrvc = require('./PessoasService');
-var ResourceSrvc = require('./ResourcesService');
-var writer = require('../utils/writer.ts');
-var foreach = require('../utils/foreach').foreach;
+var FileSrvc = require('./FileService')
+var PessoaSrvc = require('./PessoasService')
+var ContatosSrvc = require('./ContatosService')
+var ResourceSrvc = require('./ResourcesService')
+var writer = require('../utils/writer.ts')
+var foreach = require('../utils/foreach').foreach
 
 exports.createUser = (data, userId, tx, ft) => {
     return new Promise<object>( (accept, reject) => {
@@ -53,10 +54,36 @@ exports.createUser = (data, userId, tx, ft) => {
     })
 }
 
-exports.deleteUser = (id) => {
-    return new Promise<void>((accept, reject) => {
-        accept()
-    });
+exports.deleteUser = (id, userId, tx, ft) => {
+    return new Promise<void>( (accept, reject) => {
+        var options: any = {
+            where: {
+                id: id
+            },
+            include: Role,
+            transaction: tx
+        }
+        User.findOne(options).then( (user) => {
+            if (user != null && user != undefined) {
+                ContatosSrvc.deleteContatosByUserId(user.id, tx).then( () => {
+                    var userRoles = Array.from(user.roles, (role: any) => { return role.id })
+                    user.removeRoles(userRoles, { transaction: tx }).then( () => {
+                        user.destroy({ transaction: tx }).then( () => {
+                            accept()
+                        }).catch( (err) => {
+                            reject(err)
+                        })
+                    }).catch( (err) => {
+                        reject(err)
+                    })
+                }).catch( (err) => {
+                    reject(err)
+                })
+            } else {
+                reject( writer.respondWithCode(404, { message: 'Usuário não encontrada' }) )
+            }
+        })
+    })
 }
 
 exports.filterUser = (page, search='', userId) => {
@@ -115,7 +142,7 @@ exports.filterUser = (page, search='', userId) => {
         }).catch( (err) => {
             reject(err)
         })
-    });
+    })
 }
 
 exports.findUserById = (id) => {
@@ -163,7 +190,7 @@ exports.findUserById = (id) => {
         }).catch( (err) => {
             reject(err)
         })
-    });
+    })
 }
 
 exports.getUser = (id) => {
@@ -250,7 +277,7 @@ exports.getUser = (id) => {
         }).catch( (err) => {
             reject(err)
         })
-    });
+    })
 }
 
 exports.updateUser = (data, id, userId, tx, tf) => {
@@ -332,7 +359,7 @@ exports.updateUser = (data, id, userId, tx, tf) => {
         }).catch( (err) => {
             reject(err)
         })
-    });
+    })
 }
 
 var bcryptPassword = (password) => {

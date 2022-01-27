@@ -8,24 +8,26 @@ gulp.task("default", function () {
     .pipe(tsProject())
     .js
     .pipe(
-        through2.obj( (file, _, cb) => {
-            file.contents = Buffer.from( file.contents.toString().replaceAll(/\.ts/ig, '.js') )
-            cb(null, file)
-        })
+      through2.obj( (file, _, cb) => {
+        file.contents = Buffer.from( file.contents.toString().replaceAll(/\.ts/ig, '.js') )
+        cb(null, file)
+      })
     ).pipe(
       gulp.src(
         [
-            '*',
-            '.*',
-            '**/*',
-            '.**/*',
-            '!*.ts',
-            '!**/*.ts',
-            '!.git/*',
-            '!.git',
-            '!.gitignore',
-            '!node_modules/*'
+          '*',
+          '.*',
+          '**/*',
+          '.**/*',
+          '!*.ts',
+          '!**/*.ts',
+          '!.git/*',
+          '!.git',
+          '!.gitignore',
+          '!node_modules/*',
+          '!pictures/*',
+          '!dist/*'
         ]
       )
-    ).pipe(gulp.dest("../dist"));
+    ).pipe(gulp.dest("./dist"));
 });

@@ -349,37 +349,50 @@ exports.updatePessoa = (data, id, userId, tx, ft) => {
         }
         Pessoa.findOne(options).then( (pessoa) => {
             if (pessoa != null && pessoa != undefined) {
-                FileSrvc.saveFoto(data.foto, ft, tx).then( (filename) => {
-                    if (filename != '') {
-                        data.foto = filename
-                    } else {
-                        delete data.foto
+                options = {
+                    where: {
+                        pessoa_id: id
                     }
-                    validatePessoa(data, tx, id).then( (data) => {
-                        delete data.id
-                        options = {
-                            where: {
-                                id: id
-                            },
-                            transaction: tx
-                        }
-                        Pessoa.update(data, options).then( () => {
-                            data.endereco.pessoa_id = pessoa.id
-                            EnderecosSrvc.updateEndereco(data.endereco, data.endereco.id, userId, tx).then( () => {
-                                updateContatos(data.contatos, pessoa.id, userId, tx).then( () => {
-                                    accept()
+                }
+                User.findOne(options).then( (user) => {
+                    if ( (user != null && user != undefined) && user.id != userId ) {
+                        reject( writer.respondWithCode(403, { message: 'Você não tem permissão para fazer isso' }) )
+                    } else {
+                        FileSrvc.saveFoto(data.foto, ft, tx).then( (filename) => {
+                            if (filename != '') {
+                                data.foto = filename
+                            } else {
+                                delete data.foto
+                            }
+                            validatePessoa(data, tx, id).then( (data) => {
+                                delete data.id
+                                options = {
+                                    where: {
+                                        id: id
+                                    },
+                                    transaction: tx
+                                }
+                                Pessoa.update(data, options).then( () => {
+                                    data.endereco.pessoa_id = pessoa.id
+                                    EnderecosSrvc.updateEndereco(data.endereco, data.endereco.id, userId, tx).then( () => {
+                                        updateContatos(data.contatos, pessoa.id, userId, tx).then( () => {
+                                            accept()
+                                        }).catch( (err) => {
+                                            reject(err)
+                                        })
+                                    }).catch( (err) => {
+                                        reject(err)
+                                    }) 
                                 }).catch( (err) => {
                                     reject(err)
                                 })
                             }).catch( (err) => {
                                 reject(err)
-                            }) 
+                            })
                         }).catch( (err) => {
                             reject(err)
                         })
-                    }).catch( (err) => {
-                        reject(err)
-                    })
+                    }
                 }).catch( (err) => {
                     reject(err)
                 })

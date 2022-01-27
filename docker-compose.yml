@@ -6,7 +6,7 @@ networks:
 services:
   app:
     build: .
-    image: agenda
+    image: agenda_api
     container_name: node_api_agenda
     volumes:
       - ./pictures/:/app/pictures/
