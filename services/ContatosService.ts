@@ -9,7 +9,7 @@ var ContatoTipo = db.contatoTipo
 var ResourceSrvc = require('./ResourcesService')
 var writer = require('../utils/writer.ts');
 
-exports.createContato = (data, userId, tx) => {
+exports.createContato = (data, loggedUser, tx) => {
     return new Promise<void>((accept, reject) => {
         validateContato(data, tx).then( (data) => {
             Contato.create(data, { transaction: tx }).then( () => {
@@ -23,20 +23,20 @@ exports.createContato = (data, userId, tx) => {
     });
 }
 
-exports.deleteContato = (id, userId) => {
+exports.deleteContato = (id, loggedUser) => {
     return new Promise<void>((accept, reject) => {
         var options = {
             where: {
                 id: id,
                 [Op.or]: [
-                    { user_id: userId },
+                    { user_id: loggedUser.id },
                     { publico: true }
                 ]
             }
         }
         Contato.findOne(options).then( (contato) => {
             if (contato != null && contato != undefined) {
-                if (contato.user_id == userId) {
+                if (contato.user_id == loggedUser.id) {
                     contato.destroy().then( () => {
                         accept()
                     }).catch( (err) => {
@@ -74,7 +74,7 @@ exports.deleteContatosByUserId = (userId, tx) => {
     });
 }
 
-exports.filterContato = (page, search='', userId) => {
+exports.filterContato = (page, search='', loggedUser) => {
     return new Promise<object>((accept, reject) => {
         var options: any = {
             where: {
@@ -99,7 +99,7 @@ exports.filterContato = (page, search='', userId) => {
                         [Op.or]: [
                             { 
                                 user_id: {
-                                    [Op.eq]: userId
+                                    [Op.eq]: loggedUser.id
                                 }
                             },{ 
                                 publico: {
@@ -128,7 +128,7 @@ exports.filterContato = (page, search='', userId) => {
                         as: 'benfeitores',
                         required: false,
                         where: {
-                            id: userId
+                            id: loggedUser.id
                         }
                     }
                 },{
@@ -161,7 +161,7 @@ exports.filterContato = (page, search='', userId) => {
     });
 }
 
-exports.findContatoById = (id, userId) => {
+exports.findContatoById = (id, loggedUser) => {
     return new Promise<void>((accept, reject) => {
         var options: any = {
             where: {
@@ -172,7 +172,7 @@ exports.findContatoById = (id, userId) => {
                         [Op.or]: [
                             { 
                                 user_id: {
-                                    [Op.eq]: userId
+                                    [Op.eq]: loggedUser.id
                                 }
                             },{ 
                                 publico: {
@@ -203,7 +203,7 @@ exports.findContatoById = (id, userId) => {
     });
 }
 
-exports.updateContato = (data, id, userId, tx) => {
+exports.updateContato = (data, id, loggedUser, tx) => {
     return new Promise<void>((accept, reject) => {
         var options = {
             where: {
@@ -213,7 +213,7 @@ exports.updateContato = (data, id, userId, tx) => {
         }
         Contato.findOne(options).then( (contato) => {
             if (contato != null && contato != undefined) {
-                if (contato.user_id != userId) {
+                if (contato.user_id != loggedUser.id) {
                     reject( writer.respondWithCode(403, { message: 'Você não tem permissão para fazer isso' }) )
                 } else {
                     validateContato(data, tx).then( (data) => {

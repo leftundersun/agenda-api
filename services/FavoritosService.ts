@@ -6,7 +6,7 @@ var User = db.user
 var foreach = require('../utils/foreach').foreach;
 var writer = require('../utils/writer.ts');
 
-exports.addFavorito = (id, userId, tx) => {
+exports.addFavorito = (id, loggedUser, tx) => {
     return new Promise<void>((accept, reject) => {
         var options: any = {
             where: {
@@ -18,7 +18,7 @@ exports.addFavorito = (id, userId, tx) => {
             if (pessoa != null && pessoa != undefined) {
                 options = {
                     where: {
-                        id: userId
+                        id: loggedUser.id
                     },
                     include: {
                         model: Pessoa,
@@ -52,13 +52,7 @@ exports.addFavorito = (id, userId, tx) => {
     });
 }
 
-exports.listFavoritos = () => {
-    return new Promise<void>((accept, reject) => {
-        accept();
-    })
-}
-
-exports.removeFavorito = (id, userId, tx) => {
+exports.removeFavorito = (id, loggedUser, tx) => {
     return new Promise<void>((accept, reject) => {
         var options: any = {
             where: {
@@ -70,7 +64,7 @@ exports.removeFavorito = (id, userId, tx) => {
             if (pessoa != null && pessoa != undefined) {
                 options = {
                     where: {
-                        id: userId
+                        id: loggedUser.id
                     },
                     include: {
                         model: Pessoa,

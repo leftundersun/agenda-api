@@ -6,7 +6,7 @@ var jwt = require('jsonwebtoken')
 var bcrypt = require('bcrypt')
 var writer = require('../utils/writer.ts');
 
-exports.login = (req) => {
+var login = (req) => {
     return new Promise<string>( (accept, reject) => {
         extractUserAndPassFromReq(req).then( (credentials) => {
             var username = credentials[0]
@@ -41,7 +41,7 @@ exports.login = (req) => {
     })
 }
 
-exports.verifyToken = (req, res, roles, next, callback=null) => {
+var verifyToken = (req, res, roles, next, callback=null) => {
     extractTokenFromReq(req).then( (token) => {
         jwt.verify(token, process.env.TOKEN_SECRET, (err, decoded) => {
             if (err) {
@@ -49,29 +49,17 @@ exports.verifyToken = (req, res, roles, next, callback=null) => {
             } else {
                 User.findOne({ where: { id: decoded.id }, include: Role }).then( (user) => {
                     if (user != null && user != undefined) {
-                        var authorized = true
-                        roles.forEach( (role) => {
-                            var hasRole = false
-                            user.roles.forEach( (userRole) => {
-                                if (userRole.descricao == role) {
-                                    hasRole = true
-                                }
-                            })
-                            if (!hasRole) {
-                                authorized = false
-                            }
-                        })
-                        if (!authorized) {
+                        if (!hasRoles(roles, user.roles)) {
                             if (callback != null && callback != undefined) {
-                                callback(user.id)
+                                callback(user)
                             } else {
                                 writer.writeJson( res, writer.respondWithCode(403, { message: 'Você não tem permissão para fazer isso' }) )
                             }
                         } else {
-                            next(user.id)
+                            next(user)
                         }
                     } else {
-                        writer.writeJson( res, writer.respondWithCode(401, { message: 'Usuário não encontrado' }) )
+                        writer.writeJson( res, writer.respondWithCode(401, { message: 'Token inválido' }) )
                     }
                 }).catch( (err) => {
                     writer.writeJson( res, writer.tratarErro(err) )
@@ -114,3 +102,27 @@ var extractUserAndPassFromReq = (req) => {
         }
     })
 }
+
+var hasRoles = (requiredRoles, userRoles) => {
+    console.log('############ requiredRoles')
+    console.log(requiredRoles)
+    console.log('############ userRoles')
+    console.log(userRoles)
+    var authorized = true
+    requiredRoles.forEach( (role) => {
+        var hasRole = false
+        userRoles.forEach( (userRole) => {
+            if (userRole.descricao == role) {
+                hasRole = true
+            }
+        })
+        if (!hasRole) {
+            authorized = false
+        }
+    })
+    return authorized
+}
+
+exports.login = login
+exports.verifyToken = verifyToken
+exports.hasRoles = hasRoles

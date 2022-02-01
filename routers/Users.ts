@@ -5,8 +5,8 @@ var UsersCtrl = require('../controllers/UsersController');
 var AuthSrvc = require('../services/AuthService');
 
 module.exports.createUser = (req, res, next) => {
-    AuthSrvc.verifyToken(req, res, ['admin'], (userId) => {
-        UsersCtrl.createUser(req.body, req.files, userId).then( (response) => {
+    AuthSrvc.verifyToken(req, res, ['admin'], (loggedUser) => {
+        UsersCtrl.createUser(req.body, req.files, loggedUser).then( (response) => {
             writer.writeJson(res, response);
         }).catch( (response) => {
             writer.writeJson(res, response);
@@ -15,8 +15,8 @@ module.exports.createUser = (req, res, next) => {
 };
 
 module.exports.deleteUser = (req, res, next, id) => {
-    AuthSrvc.verifyToken(req, res, ['admin'], (userId) => {
-        UsersCtrl.deleteUser(id, userId).then( (response) => {
+    AuthSrvc.verifyToken(req, res, ['admin'], (loggedUser) => {
+        UsersCtrl.deleteUser(id, loggedUser).then( (response) => {
             writer.writeJson(res, response);
         }).catch( (response) => {
             writer.writeJson(res, response);
@@ -25,8 +25,8 @@ module.exports.deleteUser = (req, res, next, id) => {
 };
 
 module.exports.filterUser = (req, res, next, page, search) => {
-    AuthSrvc.verifyToken(req, res, ['admin'], (userId) => {
-        UsersCtrl.filterUser(page, search, userId).then( (response) => {
+    AuthSrvc.verifyToken(req, res, ['admin'], (loggedUser) => {
+        UsersCtrl.filterUser(page, search, loggedUser).then( (response) => {
             writer.writeJson(res, response);
         }).catch( (response) => {
             writer.writeJson(res, response);
@@ -35,14 +35,14 @@ module.exports.filterUser = (req, res, next, page, search) => {
 };
 
 module.exports.findUserById = (req, res, next, id) => {
-    AuthSrvc.verifyToken(req, res, ['admin'], (userId) => {
+    AuthSrvc.verifyToken(req, res, ['admin'], (loggedUser) => {
         UsersCtrl.findUserById(id).then( (response) => {
             writer.writeJson(res, response);
         }).catch( (response) => {
             writer.writeJson(res, response);
         });
-    }, (userId) => {
-        if (id == userId) {
+    }, (loggedUser: any) => {
+        if (id == loggedUser.id) {
             UsersCtrl.findUserById(id).then( (response) => {
                 writer.writeJson(res, response);
             }).catch( (response) => {
@@ -55,8 +55,8 @@ module.exports.findUserById = (req, res, next, id) => {
 };
 
 module.exports.getUser = (req, res, next) => {
-    AuthSrvc.verifyToken(req, res, [], (userId) => {
-        UsersCtrl.getUser(userId).then( (response) => {
+    AuthSrvc.verifyToken(req, res, [], (loggedUser) => {
+        UsersCtrl.getUser(loggedUser).then( (response) => {
             writer.writeJson(res, response);
         }).catch( (response) => {
             writer.writeJson(res, response);
@@ -65,15 +65,15 @@ module.exports.getUser = (req, res, next) => {
 };
 
 module.exports.updateUser = (req, res, next, body, id) => {
-    AuthSrvc.verifyToken(req, res, ['admin'], (userId) => {
-        UsersCtrl.updateUser(req.body, req.files, id, userId).then( (response) => {
+    AuthSrvc.verifyToken(req, res, ['admin'], (loggedUser) => {
+        UsersCtrl.updateUser(req.body, req.files, id, loggedUser).then( (response) => {
             writer.writeJson(res, response);
         }).catch( (response) => {
             writer.writeJson(res, response);
         });
-    }, (userId) => {
-        if (id == userId) {
-            UsersCtrl.updateUser(req.body, req.files, id, userId).then( (response) => {
+    }, (loggedUser: any) => {
+        if (id == loggedUser.id) {
+            UsersCtrl.updateUser(req.body, req.files, id, loggedUser).then( (response) => {
                 writer.writeJson(res, response);
             }).catch( (response) => {
                 writer.writeJson(res, response);

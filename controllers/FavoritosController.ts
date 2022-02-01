@@ -9,11 +9,11 @@ var FavoritoSrvc = require('../services/FavoritosService');
  * id Integer Id da pessoa a ser adicionada aos favoritos
  * returns BasicResponse
  **/
-exports.addFavorito = (id, userId) => {
+exports.addFavorito = (id, loggedUser) => {
     return new Promise<ResponsePayload>((accept, reject) => {
         db.sequelize.transaction( (tx) => {
             return new Promise<ResponsePayload>((accept, reject) => {
-                FavoritoSrvc.addFavorito(id, userId, tx).then( () => {
+                FavoritoSrvc.addFavorito(id, loggedUser, tx).then( () => {
                     accept( writer.respondWithCode(200, { message: 'Contato adicionado aos seus favoritos' }) )
                 }).catch( (err) => {
                     reject(err)
@@ -27,30 +27,17 @@ exports.addFavorito = (id, userId) => {
     });
 }
 
-
-/**
- * Listar contatos favoritos do usuário logado
- *
- * returns FavoritoArray
- **/
-exports.listFavoritos = () => {
-    return new Promise<ResponsePayload>((accept, reject) => {
-        accept( writer.respondWithCode(501) )
-    });
-}
-
-
 /**
  * Remover um contato dos favoritos
  *
  * id Integer Id da pessoa a ser removida dos favoritos
  * returns BasicResponse
  **/
-exports.removeFavorito = (id, userId) => {
+exports.removeFavorito = (id, loggedUser) => {
     return new Promise<ResponsePayload>((accept, reject) => {
         db.sequelize.transaction( (tx) => {
             return new Promise<ResponsePayload>((accept, reject) => {
-                FavoritoSrvc.removeFavorito(id, userId, tx).then( () => {
+                FavoritoSrvc.removeFavorito(id, loggedUser, tx).then( () => {
                     accept( writer.respondWithCode(200, { message: 'Contato removido dos seus favoritos' }) )
                 }).catch( (err) => {
                     reject(err)

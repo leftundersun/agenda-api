@@ -12,6 +12,7 @@ var Contato = db.contato
 var ContatoCategoria = db.contatoCategoria
 var ContatoTipo = db.contatoTipo
 var bcrypt = require('bcrypt')
+var AuthSrvc = require('./AuthService');
 var FileSrvc = require('./FileService')
 var PessoaSrvc = require('./PessoasService')
 var ContatosSrvc = require('./ContatosService')
@@ -19,7 +20,7 @@ var ResourceSrvc = require('./ResourcesService')
 var writer = require('../utils/writer.ts')
 var foreach = require('../utils/foreach').foreach
 
-exports.createUser = (data, userId, tx, ft) => {
+exports.createUser = (data, loggedUser, tx, ft) => {
     return new Promise<object>( (accept, reject) => {
         console.log('############## data')
         console.log(data)
@@ -27,7 +28,7 @@ exports.createUser = (data, userId, tx, ft) => {
             if (user != null && user != undefined) {
                 reject( writer.respondWithCode(409, { message: 'Esse nome de usuário já está em uso' }) )
             } else {
-                PessoaSrvc.createPessoa(data.pessoa, userId, tx, ft).then( (pessoa) => {
+                PessoaSrvc.createPessoa(data.pessoa, loggedUser, tx, ft).then( (pessoa) => {
                     data.pessoa_id = pessoa.id
                     bcrypt.hash(data.password, 10).then( (hash) => {
                         data.password = hash
@@ -54,7 +55,7 @@ exports.createUser = (data, userId, tx, ft) => {
     })
 }
 
-exports.deleteUser = (id, userId, tx, ft) => {
+exports.deleteUser = (id, loggedUser, tx, ft) => {
     return new Promise<void>( (accept, reject) => {
         var options: any = {
             where: {
@@ -97,7 +98,7 @@ exports.deleteUser = (id, userId, tx, ft) => {
     })
 }
 
-exports.filterUser = (page, search='', userId) => {
+exports.filterUser = (page, search='', loggedUser) => {
     return new Promise<object>((accept, reject) => {
         var options: any = {
             where: {
@@ -204,11 +205,11 @@ exports.findUserById = (id) => {
     })
 }
 
-exports.getUser = (id) => {
+exports.getUser = (loggedUser) => {
     return new Promise<object>((accept, reject) => {
         var options = {
             where: {
-                id: id
+                id: loggedUser.id
             },
             include: [
                 Role,
@@ -291,7 +292,7 @@ exports.getUser = (id) => {
     })
 }
 
-exports.updateUser = (data, id, userId, tx, tf) => {
+exports.updateUser = (data, id, loggedUser, tx, tf) => {
     return new Promise<void>((accept, reject) => {
         console.log('############## data')
         console.log(data)
@@ -324,31 +325,23 @@ exports.updateUser = (data, id, userId, tx, tf) => {
         User.findOne(options).then( (user) => {
             if (user != null && user != undefined) {
                 validateUser(data, tx, id).then( () => {
-                    PessoaSrvc.updatePessoa(data.pessoa, data.pessoa_id, userId, tx, tf).then( () => {
-                        var rolesIds = Array.from(data.roles, (role: any) => { return role.id })
-                        var userRoles = Array.from(user.roles, (role: any) => { return role.id })
-                        var rolesToAdd = rolesIds.filter( (roleId: number) => !userRoles.includes(roleId) )
-                        var rolesToRemove = userRoles.filter( (roleId: number) => !rolesIds.includes(roleId) )
-                        user.removeRoles(rolesToRemove, { transaction: tx }).then( () => {
-                            user.addRoles(rolesToAdd, { transaction: tx }).then( () => {
-                                bcryptPassword(data.password).then( (hash) => {
-                                    if (hash.length > 0) {
-                                        data.password = hash
-                                    } else {
-                                        delete data.password
-                                    }
-                                    delete data.id
-                                    options = {
-                                        where: {
-                                            id: id
-                                        },
-                                        transaction: tx
-                                    }
-                                    User.update(data, options).then( () => {
-                                        accept()
-                                    }).catch( (err) => {
-                                        reject(err)
-                                    })
+                    PessoaSrvc.updatePessoa(data.pessoa, data.pessoa_id, loggedUser, tx, tf).then( () => {
+                        updateRoles(data.roles, user, loggedUser, tx).then( () => {
+                            bcryptPassword(data.password).then( (hash) => {
+                                if (hash.length > 0) {
+                                    data.password = hash
+                                } else {
+                                    delete data.password
+                                }
+                                delete data.id
+                                options = {
+                                    where: {
+                                        id: id
+                                    },
+                                    transaction: tx
+                                }
+                                User.update(data, options).then( () => {
+                                    accept()
                                 }).catch( (err) => {
                                     reject(err)
                                 })
@@ -370,6 +363,30 @@ exports.updateUser = (data, id, userId, tx, tf) => {
         }).catch( (err) => {
             reject(err)
         })
+    })
+}
+
+var updateRoles = (selectedRoles, user, loggedUser, tx) => {
+    return new Promise<void>((accept, reject) => {
+        if (AuthSrvc.hasRoles(['admin'], loggedUser.roles)) {
+            var rolesIds = Array.from(selectedRoles, (role: any) => { return role.id })
+            var userRoles = Array.from(user.roles, (role: any) => { return role.id })
+            
+            var rolesToAdd = rolesIds.filter( (roleId: number) => !userRoles.includes(roleId) )
+            var rolesToRemove = userRoles.filter( (roleId: number) => !rolesIds.includes(roleId) )
+
+            user.removeRoles(rolesToRemove, { transaction: tx }).then( () => {
+                user.addRoles(rolesToAdd, { transaction: tx }).then( () => {
+                    accept()
+                }).catch( (err) => {
+                    reject(err)
+                })
+            }).catch( (err) => {
+                reject(err)
+            })
+        } else {
+            accept()
+        }
     })
 }
 

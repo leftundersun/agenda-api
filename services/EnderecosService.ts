@@ -5,7 +5,7 @@ var Endereco = db.endereco
 var Cidade = db.cidade
 var writer = require('../utils/writer.ts');
 
-exports.createEndereco = (data, userId, tx) => {
+exports.createEndereco = (data, tx) => {
     return new Promise<void>( (accept, reject) => {
         validateEndereco(data).then( (data) => {
             Endereco.create(data, { transaction: tx }).then( () => {
@@ -41,7 +41,7 @@ exports.findEnderecoById = (id) => {
     });
 }
 
-exports.updateEndereco = (data, id, userId, tx) => {
+exports.updateEndereco = (data, id, tx) => {
     return new Promise<void>( (accept, reject) => {
         var options = {
             where: {

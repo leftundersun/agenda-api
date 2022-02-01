@@ -5,11 +5,7 @@ var AuthSrvc = require('../services/AuthService');
 var Resources = require('../controllers/ResourcesController');
 
 module.exports.filterPessoas = (req, res, next, search, withoutUser) => {
-    console.log('############ withoutUser')
-    console.log(withoutUser)
-    console.log('############ search')
-    console.log(search)
-    AuthSrvc.verifyToken(req, res, [], (userId) => {
+    AuthSrvc.verifyToken(req, res, [], () => {
         Resources.filterPessoas(withoutUser, search).then( (response) => {
             writer.writeJson(res, response);
         }).catch( (response) => {
@@ -19,7 +15,7 @@ module.exports.filterPessoas = (req, res, next, search, withoutUser) => {
 };
 
 module.exports.listContatoCategorias = (req, res, next) => {
-    AuthSrvc.verifyToken(req, res, [], (userId) => {
+    AuthSrvc.verifyToken(req, res, [], () => {
         Resources.listContatoCategorias().then( (response) => {
             writer.writeJson(res, response);
         }).catch( (response) => {
@@ -37,7 +33,7 @@ module.exports.listContatoTipos = (req, res, next) => {
 };
 
 module.exports.listCidades = (req, res, next, search, estadoId) => {
-    AuthSrvc.verifyToken(req, res, [], (userId) => {
+    AuthSrvc.verifyToken(req, res, [], () => {
         Resources.listCidades(estadoId, search).then( (response) => {
             writer.writeJson(res, response);
         }).catch( (response) => {
@@ -47,7 +43,7 @@ module.exports.listCidades = (req, res, next, search, estadoId) => {
 };
 
 module.exports.listEstados = (req, res, next, paisId) => {
-    AuthSrvc.verifyToken(req, res, [], (userId) => {
+    AuthSrvc.verifyToken(req, res, [], () => {
         Resources.listEstados(paisId).then( (response) => {
             writer.writeJson(res, response);
         }).catch( (response) => {
@@ -57,7 +53,7 @@ module.exports.listEstados = (req, res, next, paisId) => {
 };
 
 module.exports.listPaises = (req, res, next) => {
-    AuthSrvc.verifyToken(req, res, [], (userId) => {
+    AuthSrvc.verifyToken(req, res, [], () => {
         Resources.listPaises().then( (response) => {
             writer.writeJson(res, response);
         }).catch( (response) => {
@@ -67,7 +63,7 @@ module.exports.listPaises = (req, res, next) => {
 };
 
 module.exports.listRoles = (req, res, next) => {
-    AuthSrvc.verifyToken(req, res, [], (userId) => {
+    AuthSrvc.verifyToken(req, res, [], () => {
         Resources.listRoles().then( (response) => {
             writer.writeJson(res, response);
         }).catch( (response) => {

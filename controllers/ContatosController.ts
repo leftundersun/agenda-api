@@ -9,15 +9,15 @@ var ContatoSrvc = require('../services/ContatosService');
  * body ContatoJson Dados do contato a ser criado (optional)
  * returns BasicResponse
  **/
-exports.createContato = (body, userId) => {
+exports.createContato = (body, loggedUser) => {
     return new Promise<ResponsePayload>((accept, reject) => {
         db.sequelize.transaction( (tx) => {
             return new Promise<ResponsePayload>((accept, reject) => {
-                body.user_id = userId
+                body.user_id = loggedUser.id
                 if (body.pessoa_id == 0) {
                     body.pessoa_id = body.pessoa.id
                 }
-                ContatoSrvc.createContato(body, userId, tx).then( () => {
+                ContatoSrvc.createContato(body, loggedUser, tx).then( () => {
                     accept( writer.respondWithCode(201, { message: 'Contato criado com sucesso' }) )
                 }).catch( (err) => {
                     reject(err)
@@ -37,9 +37,9 @@ exports.createContato = (body, userId) => {
  * id Integer Id do contato a ser excluído
  * returns BasicResponse
  **/
-exports.deleteContato = (id, userId) => {
+exports.deleteContato = (id, loggedUser) => {
     return new Promise<ResponsePayload>((accept, reject) => {
-        ContatoSrvc.deleteContato(id, userId).then( () => {
+        ContatoSrvc.deleteContato(id, loggedUser).then( () => {
             accept( writer.respondWithCode(200, { message: 'Contato excluído com sucesso' }) )
         }).catch( (err) => {
             reject( writer.tratarErro(err) )
@@ -53,9 +53,9 @@ exports.deleteContato = (id, userId) => {
  * page Integer 
  * returns ContatoArray
  **/
-exports.filterContato = (page, search, userId) => {
+exports.filterContato = (page, search, loggedUser) => {
     return new Promise<ResponsePayload>((accept, reject) => {
-        ContatoSrvc.filterContato(page, search, userId).then( (response) => {
+        ContatoSrvc.filterContato(page, search, loggedUser).then( (response) => {
             accept( writer.respondWithCode(200, response) )
         }).catch( (err) => {
             reject( writer.tratarErro(err) )
@@ -69,9 +69,9 @@ exports.filterContato = (page, search, userId) => {
  * id Integer Id do contato a ser encontrado
  * returns ContatoJson
  **/
-exports.findContatoById = (id, userId) => {
+exports.findContatoById = (id, loggedUser) => {
     return new Promise<ResponsePayload>((accept, reject) => {
-        ContatoSrvc.findContatoById(id, userId).then( (contato) => {
+        ContatoSrvc.findContatoById(id, loggedUser).then( (contato) => {
             accept( writer.respondWithCode(200, { contato: contato }) )
         }).catch( (err) => {
             reject( writer.tratarErro(err) )
@@ -87,15 +87,15 @@ exports.findContatoById = (id, userId) => {
  * id Integer Id do contato a ser atualizado
  * returns BasicResponse
  **/
-exports.updateContato = (body, id, userId) => {
+exports.updateContato = (body, id, loggedUser) => {
     return new Promise<ResponsePayload>((accept, reject) => {
         db.sequelize.transaction( (tx) => {
             return new Promise<ResponsePayload>((accept, reject) => {
-                body.user_id = userId
+                body.user_id = loggedUser.id
                 if (body.pessoa_id == 0) {
                     body.pessoa_id = body.pessoa.id
                 }
-                ContatoSrvc.updateContato(body, id, userId, tx).then( () => {
+                ContatoSrvc.updateContato(body, id, loggedUser, tx).then( () => {
                     accept( writer.respondWithCode(200, { message: 'Contato atualizado com sucesso' }) )
                 }).catch( (err) => {
                     reject(err)

@@ -19,7 +19,7 @@ var validateCpf = require('../utils/validate-cpf').validateCpf
 var writer = require('../utils/writer.ts')
 var moment = require('moment')
 
-exports.createPessoa = (data, userId, tx, ft) => {
+exports.createPessoa = (data, loggedUser, tx, ft) => {
     return new Promise<object>( (accept, reject) => {
         console.log('############## data')
         console.log(data)
@@ -31,8 +31,8 @@ exports.createPessoa = (data, userId, tx, ft) => {
                 validatePessoa(data, tx).then( (data) => {
                     Pessoa.create( data, { transaction: tx } ).then( (pessoa) => {
                         data.endereco.pessoa_id = pessoa.id
-                        EnderecosSrvc.createEndereco(data.endereco, userId, tx).then( () => {
-                            createContatos(data.contatos ?? [], pessoa.id, userId, tx).then( () => {
+                        EnderecosSrvc.createEndereco(data.endereco, tx).then( () => {
+                            createContatos(data.contatos ?? [], pessoa.id, loggedUser, tx).then( () => {
                                 accept(pessoa)
                             }).catch( (err) => {
                                 reject(err)
@@ -53,14 +53,14 @@ exports.createPessoa = (data, userId, tx, ft) => {
     })
 }
 
-var createContatos = (contatos, pessoaId, userId, tx) => {
+var createContatos = (contatos, pessoaId, loggedUser, tx) => {
     return new Promise<void>((accept, reject) => {
         if (contatos != null && contatos != undefined) {
             foreach(contatos, (contato) => {
                 return new Promise<void>((accept, reject) => {
                     contato.pessoa_id = pessoaId
-                    contato.user_id = userId
-                    ContatosSrvc.createContato(contato, userId, tx).then( () => {
+                    contato.user_id = loggedUser.id
+                    ContatosSrvc.createContato(contato, loggedUser, tx).then( () => {
                         accept()
                     }).catch( (err) => {
                         reject(err)
@@ -77,21 +77,21 @@ var createContatos = (contatos, pessoaId, userId, tx) => {
     })
 }
 
-var updateContatos = (contatos, pessoaId, userId, tx) => {
+var updateContatos = (contatos, pessoaId, loggedUser, tx) => {
     return new Promise<void>((accept, reject) => {
         if (contatos != null && contatos != undefined) {
             foreach(contatos, (contato) => {
                 return new Promise<void>((accept, reject) => {
                     if (contato.id > 0) {
-                        ContatosSrvc.updateContato(contato, contato.id, userId, tx).then( () => {
+                        ContatosSrvc.updateContato(contato, contato.id, loggedUser, tx).then( () => {
                             accept()
                         }).catch( (err) => {
                             reject(err)
                         })
                     } else {
                         contato.pessoa_id = pessoaId
-                        contato.user_id = userId
-                        ContatosSrvc.createContato(contato, userId, tx).then( () => {
+                        contato.user_id = loggedUser.id
+                        ContatosSrvc.createContato(contato, loggedUser, tx).then( () => {
                             accept()
                         }).catch( (err) => {
                             reject(err)
@@ -109,7 +109,7 @@ var updateContatos = (contatos, pessoaId, userId, tx) => {
     })
 }
 
-exports.deletePessoa = (id, userId, tx, ft) => {
+exports.deletePessoa = (id, loggedUser, tx, ft) => {
     return new Promise<void>( (accept, reject) => {
         var options: any = {
             where: {
@@ -165,7 +165,7 @@ exports.deletePessoa = (id, userId, tx, ft) => {
     })
 }
 
-exports.filterPessoa = (page, search='', userId) => {
+exports.filterPessoa = (page, search='', loggedUser) => {
     return new Promise<object>( (accept, reject) => {
         var options: any = {
             where: {
@@ -206,7 +206,7 @@ exports.filterPessoa = (page, search='', userId) => {
                         [Op.or]: [
                             { 
                                 user_id: {
-                                    [Op.eq]: userId
+                                    [Op.eq]: loggedUser.id
                                 }
                             },{ 
                                 publico: {
@@ -242,7 +242,7 @@ exports.filterPessoa = (page, search='', userId) => {
     })
 }
 
-exports.findPessoaById = (id, userId) => {
+exports.findPessoaById = (id, loggedUser) => {
     return new Promise<void>((accept, reject) => {
         var options = {
             where: {
@@ -268,7 +268,7 @@ exports.findPessoaById = (id, userId) => {
                         [Op.or]: [
                             { 
                                 user_id: {
-                                    [Op.eq]: userId
+                                    [Op.eq]: loggedUser.id
                                 }
                             },{ 
                                 publico: {
@@ -310,10 +310,8 @@ exports.findPessoaById = (id, userId) => {
     })
 }
 
-exports.updatePessoa = (data, id, userId, tx, ft) => {
+exports.updatePessoa = (data, id, loggedUser, tx, ft) => {
     return new Promise<void>( (accept, reject) => {
-        console.log('############## data')
-        console.log(data)
         var options: any = {
             where: {
                 id: id
@@ -338,7 +336,7 @@ exports.updatePessoa = (data, id, userId, tx, ft) => {
                         [Op.or]: [
                             { 
                                 user_id: {
-                                    [Op.eq]: userId
+                                    [Op.eq]: loggedUser.id
                                 }
                             },{ 
                                 publico: {
@@ -362,50 +360,37 @@ exports.updatePessoa = (data, id, userId, tx, ft) => {
         }
         Pessoa.findOne(options).then( (pessoa) => {
             if (pessoa != null && pessoa != undefined) {
-                options = {
-                    where: {
-                        pessoa_id: id
-                    }
-                }
-                User.findOne(options).then( (user) => {
-                    if ( (user != null && user != undefined) && user.id != userId ) {
-                        reject( writer.respondWithCode(403, { message: 'Você não tem permissão para fazer isso' }) )
+                FileSrvc.saveFoto(data.foto, ft, tx).then( (filename) => {
+                    if (filename != '') {
+                        data.foto = filename
                     } else {
-                        FileSrvc.saveFoto(data.foto, ft, tx).then( (filename) => {
-                            if (filename != '') {
-                                data.foto = filename
-                            } else {
-                                delete data.foto
-                            }
-                            validatePessoa(data, tx, id).then( (data) => {
-                                delete data.id
-                                options = {
-                                    where: {
-                                        id: id
-                                    },
-                                    transaction: tx
-                                }
-                                Pessoa.update(data, options).then( () => {
-                                    data.endereco.pessoa_id = pessoa.id
-                                    EnderecosSrvc.updateEndereco(data.endereco, data.endereco.id, userId, tx).then( () => {
-                                        updateContatos(data.contatos, pessoa.id, userId, tx).then( () => {
-                                            accept()
-                                        }).catch( (err) => {
-                                            reject(err)
-                                        })
-                                    }).catch( (err) => {
-                                        reject(err)
-                                    }) 
+                        delete data.foto
+                    }
+                    validatePessoa(data, tx, id).then( (data) => {
+                        delete data.id
+                        options = {
+                            where: {
+                                id: id
+                            },
+                            transaction: tx
+                        }
+                        Pessoa.update(data, options).then( () => {
+                            data.endereco.pessoa_id = pessoa.id
+                            EnderecosSrvc.updateEndereco(data.endereco, data.endereco.id, tx).then( () => {
+                                updateContatos(data.contatos, pessoa.id, loggedUser, tx).then( () => {
+                                    accept()
                                 }).catch( (err) => {
                                     reject(err)
                                 })
                             }).catch( (err) => {
                                 reject(err)
-                            })
+                            }) 
                         }).catch( (err) => {
                             reject(err)
                         })
-                    }
+                    }).catch( (err) => {
+                        reject(err)
+                    })
                 }).catch( (err) => {
                     reject(err)
                 })

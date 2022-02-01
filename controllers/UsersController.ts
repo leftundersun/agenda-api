@@ -8,13 +8,13 @@ var TransactionSrvc = require('../services/TransactionService');
  *
  * returns BasicResponse
  **/
-exports.createUser = (body, files, userId) => {
+exports.createUser = (body, files, loggedUser) => {
     return new Promise<ResponsePayload>((accept, reject) => {
         TransactionSrvc.transaction( (tx, ft) => {
             return new Promise<ResponsePayload>((accept, reject) => {
                 var data = JSON.parse(body.user)
                 data.pessoa.foto = files ? files[0] : null
-                UserSrvc.createUser(data, userId, tx, ft).then( () => {
+                UserSrvc.createUser(data, loggedUser, tx, ft).then( () => {
                     accept( writer.respondWithCode(201, { message: 'Usuário criado com sucesso' }) )
                 }).catch( (err) => {
                     reject(err)
@@ -35,11 +35,11 @@ exports.createUser = (body, files, userId) => {
  * id Integer Id do usuário a ser excluído
  * returns BasicResponse
  **/
-exports.deleteUser = (id, userId) => {
+exports.deleteUser = (id, loggedUser) => {
     return new Promise<ResponsePayload>((accept, reject) => {
         TransactionSrvc.transaction( (tx, ft) => {
             return new Promise<ResponsePayload>((accept, reject) => {
-                UserSrvc.deleteUser(id, userId, tx, ft).then( () => {
+                UserSrvc.deleteUser(id, loggedUser, tx, ft).then( () => {
                     accept( writer.respondWithCode(200, { message: 'Usuário excluído com sucesso' }) )
                 }).catch( (err) => {
                     reject(err)
@@ -60,9 +60,9 @@ exports.deleteUser = (id, userId) => {
  * page Integer 
  * returns UserArray
  **/
-exports.filterUser = (page, search, userId) => {
+exports.filterUser = (page, search, loggedUser) => {
     return new Promise<ResponsePayload>((accept, reject) => {
-        UserSrvc.filterUser(page, search, userId).then( (response) => {
+        UserSrvc.filterUser(page, search, loggedUser).then( (response) => {
             accept( writer.respondWithCode(200, response) )
         }).catch( (err) => {
             reject( writer.tratarErro(err) )
@@ -93,9 +93,9 @@ exports.findUserById = (id) => {
  *
  * returns UserJson
  **/
-exports.getUser = (loggedUserId) => {
+exports.getUser = (loggedUser) => {
     return new Promise<ResponsePayload>((accept, reject) => {
-        UserSrvc.getUser(loggedUserId).then( (user) => {
+        UserSrvc.getUser(loggedUser).then( (user) => {
             accept( writer.respondWithCode(200, { user: user }) )
         }).catch( (err) => {
             reject( writer.tratarErro(err) )
@@ -110,13 +110,13 @@ exports.getUser = (loggedUserId) => {
  * id Integer Id do usuário a ser atualizado
  * returns BasicResponse
  **/
-exports.updateUser = (body, files, id, userId) => {
+exports.updateUser = (body, files, id, loggedUser) => {
     return new Promise<ResponsePayload>((accept, reject) => {
         TransactionSrvc.transaction( (tx, ft) => {
             return new Promise<ResponsePayload>((accept, reject) => {
                 var data = JSON.parse(body.user)
                 data.pessoa.foto = files ? files[0] : null
-                UserSrvc.updateUser(data, id, userId, tx, ft).then( () => {
+                UserSrvc.updateUser(data, id, loggedUser, tx, ft).then( () => {
                     accept( writer.respondWithCode(201, { message: 'Usuário atualizado com sucesso' }) )
                 }).catch( (err) => {
                     reject(err)
