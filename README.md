@@ -7,6 +7,6 @@ Essa API ainda está em desenvolvimento.
 
 Um front-end Vue.js também está em desenvolvimento, você pode conferir em https://github.com/sirhennig/agenda-spa.
 
-### Rodando pela primeira vez
+### Rodando a aplicação
 
 * execute `docker-compose up` na raiz do projeto
