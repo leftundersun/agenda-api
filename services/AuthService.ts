@@ -104,10 +104,6 @@ var extractUserAndPassFromReq = (req) => {
 }
 
 var hasRoles = (requiredRoles, userRoles) => {
-    console.log('############ requiredRoles')
-    console.log(requiredRoles)
-    console.log('############ userRoles')
-    console.log(userRoles)
     var authorized = true
     requiredRoles.forEach( (role) => {
         var hasRole = false
