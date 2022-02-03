@@ -797,28 +797,6 @@ paths:
       security:
       - jwt: []
       x-swagger-router-controller: Resources
-  /favoritos/list:
-    get:
-      tags:
-      - favoritos
-      summary: Listar contatos favoritos do usuário logado
-      operationId: listFavoritos
-      responses:
-        "200":
-          description: Lista de favoritos
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/FavoritoArray'
-        "401":
-          description: Falha de autenticação
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BasicResponse'
-      security:
-      - jwt: []
-      x-swagger-router-controller: Favoritos
   /favoritos/{id}:
     put:
       tags:
