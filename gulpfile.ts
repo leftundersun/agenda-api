@@ -21,12 +21,18 @@ gulp.task("default", function () {
           '.**/*',
           '!*.ts',
           '!**/*.ts',
-          '!.git/*',
           '!.git',
+          '!.git/*',
           '!.gitignore',
+          '!node_modules',
           '!node_modules/*',
+          '!node_modules/**/*',
+          '!pictures',
           '!pictures/*',
-          '!dist/*'
+          '!pictures/**/*',
+          '!dist',
+          '!dist/*',
+          '!dist/**/*'
         ]
       )
     ).pipe(gulp.dest("./dist"));
