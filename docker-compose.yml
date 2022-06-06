@@ -18,7 +18,7 @@ services:
       - network
     environment:
       - PORT=3000
-      - DB_HOST=docker_mysql
+      - DB_HOST=agenda_mysql
       - DB_PORT=3306
       - DB_USER=root
       - DB_PASS=root
@@ -29,7 +29,7 @@ services:
       - NODE_ENV=production
   db:
     image: mysql:8.0.27
-    container_name: docker_mysql
+    container_name: agenda_mysql
     command: --default-authentication-plugin=mysql_native_password
     restart: always
     ports:

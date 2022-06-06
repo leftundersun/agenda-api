@@ -6,7 +6,7 @@ var http = require('http');
 var express = require('express')
 var cors = require('cors')
 var helmet = require('helmet')
-var teste = require('crypto')
+var cryptoLibrary = require('crypto')
 
 var oas3Tools = require('oas3-tools');
 var serverPort = process.env.PORT;
@@ -14,7 +14,7 @@ var serverPort = process.env.PORT;
 var db = require('./models')
 
 //set token secret
-teste.randomBytes(64, (err, buf) => {
+cryptoLibrary.randomBytes(64, (err, buf) => {
   if (err) {
   } else {
     process.env.TOKEN_SECRET = buf.toString('hex')
